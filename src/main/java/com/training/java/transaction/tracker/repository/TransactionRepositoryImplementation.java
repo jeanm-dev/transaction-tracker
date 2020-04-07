@@ -13,6 +13,17 @@ import java.util.List;
 
 public class TransactionRepositoryImplementation implements TransactionRepository {
 
+    private static final String TABLE_NAME = "TransactionEntries";
+    private static final String TRANSACTION_ID_COLUMN = "transactionId";
+    private static final String DESCRIPTION_COLUMN = "description";
+    private static final String AMOUNT_COLUMN = "amount";
+    private static final String DATE_OF_TRANSACTION_COLUMN = "dateOfTransaction";
+
+    private static final String ADD_STATEMENT = String.format("INSERT INTO %s (%s, %s, %S) VALUES (?, ?, ?)", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
+    private static final String DELETE_STATEMENT = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, TRANSACTION_ID_COLUMN);
+    private static final String UPDATE_STATEMENT = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TRANSACTION_ID_COLUMN);
+    private static final String SELECT_ALL_STATEMENT = String.format("SELECT %s, %s, %s, %s FROM %s", TABLE_NAME, TRANSACTION_ID_COLUMN, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
+
     private Database database;
 
     public TransactionRepositoryImplementation(Database database) {
@@ -21,12 +32,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
 
     @Override
     public void addTransaction(Transaction transaction) throws SQLException {
-        String createStatement = "INSERT INTO Transactions (description, amount, dateOfTransaction) VALUES (?, ?, ?)";
         Connection connection = database.getConnection();
 
         Date transactionDate = new Date(transaction.getDateOfTransaction().getTime());
 
-        PreparedStatement preparedStatement = connection.prepareStatement(createStatement);
+        PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT);
         preparedStatement.setString(1, transaction.getDescription());
         preparedStatement.setBigDecimal(2, transaction.getAmount());
         preparedStatement.setDate(3, transactionDate);
@@ -38,10 +48,9 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
 
     @Override
     public void removeTransaction(Transaction transaction) throws SQLException {
-        String deleteStatement = "DELETE FROM Transactions WHERE transactionId = ?";
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(deleteStatement);
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_STATEMENT);
         preparedStatement.setInt(1, transaction.getIdentifier());
 
         preparedStatement.execute();
@@ -51,10 +60,9 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
 
     @Override
     public void updateTransaction(Transaction transaction) throws SQLException {
-        String updateStatement = "UPDATE Transactions SET description = ?, amount = ?, dateOfTransaction = ? WHERE transactionId = ?";
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(updateStatement);
+        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STATEMENT);
 
         Date transactionDate = new Date(transaction.getDateOfTransaction().getTime());
         preparedStatement.setString(1, transaction.getDescription());
@@ -71,10 +79,9 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     @Override
     public List<Transaction> fetchAllTransactions() throws SQLException {
         List<Transaction> transactions = null;
-        String fetchStatement = "SELECT transactionId, description, amount, dateOfTransaction FROM Transactions";
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(fetchStatement);
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_STATEMENT);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
