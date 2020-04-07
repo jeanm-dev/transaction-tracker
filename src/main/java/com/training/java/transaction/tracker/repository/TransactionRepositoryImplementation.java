@@ -22,7 +22,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String ADD_STATEMENT = String.format("INSERT INTO %s (%s, %s, %S) VALUES (?, ?, ?)", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
     private static final String DELETE_STATEMENT = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, TRANSACTION_ID_COLUMN);
     private static final String UPDATE_STATEMENT = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TRANSACTION_ID_COLUMN);
-    private static final String SELECT_ALL_STATEMENT = String.format("SELECT %s, %s, %s, %s FROM %s", TABLE_NAME, TRANSACTION_ID_COLUMN, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
+    private static final String SELECT_ALL_STATEMENT = String.format("SELECT %s, %s, %s, %s FROM %s", TRANSACTION_ID_COLUMN, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TABLE_NAME);
 
     private Database database;
 
