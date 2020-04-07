@@ -1,9 +1,5 @@
 package com.training.java.transaction.tracker.data;
 
-
-import javafx.util.Pair;
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
