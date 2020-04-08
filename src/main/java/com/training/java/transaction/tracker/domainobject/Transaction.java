@@ -10,6 +10,15 @@ public class Transaction {
     private BigDecimal amount;
     private Date dateOfTransaction;
 
+    public Transaction() {
+    }
+
+    public Transaction(String description, BigDecimal amount, Date dateOfTransaction) {
+        this.description = description;
+        this.amount = amount;
+        this.dateOfTransaction = dateOfTransaction;
+    }
+
     public int getIdentifier() {
         return identifier;
     }

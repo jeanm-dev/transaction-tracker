@@ -1,9 +1,6 @@
 package com.training.java.transaction.tracker.presentation.application;
 
-import com.training.java.transaction.tracker.presentation.application.instructions.ExitInstruction;
-import com.training.java.transaction.tracker.presentation.application.instructions.Instruction;
-import com.training.java.transaction.tracker.presentation.application.instructions.InvalidInstruction;
-import com.training.java.transaction.tracker.presentation.application.instructions.ListInstruction;
+import com.training.java.transaction.tracker.presentation.application.instructions.*;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
@@ -30,6 +27,7 @@ public class Menu {
         this.instructions = Map.of(
                 "E", new ExitInstruction(),
                 "L", new ListInstruction(transactionRepository, printStream)
+                "I", new InputInstruction("I", transactionRepository, printStream, scanner)
         );
     }
 
