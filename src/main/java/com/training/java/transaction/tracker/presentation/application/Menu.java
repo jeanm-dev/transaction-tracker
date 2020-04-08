@@ -3,6 +3,8 @@ package com.training.java.transaction.tracker.presentation.application;
 import com.training.java.transaction.tracker.presentation.application.instructions.ExitInstruction;
 import com.training.java.transaction.tracker.presentation.application.instructions.Instruction;
 import com.training.java.transaction.tracker.presentation.application.instructions.InvalidInstruction;
+import com.training.java.transaction.tracker.presentation.application.instructions.ListInstruction;
+import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
 import java.util.Map;
@@ -12,18 +14,22 @@ public class Menu {
 
     private Scanner scanner;
     private PrintStream printStream;
+    private TransactionRepository transactionRepository;
 
     private Map<String, Instruction> instructions;
 
     private static final String NEW_LINE = "\n";
 
-    public Menu(Scanner scanner, PrintStream printStream) {
+    public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository) {
         this.scanner = scanner;
         this.printStream = printStream;
 
+        this.transactionRepository = transactionRepository;
+
         // TODO: Build this dynamically
         this.instructions = Map.of(
-                "E", new ExitInstruction()
+                "E", new ExitInstruction(),
+                "L", new ListInstruction(transactionRepository, printStream)
         );
     }
 
@@ -31,13 +37,16 @@ public class Menu {
         StringBuilder builder = new StringBuilder();
 
         builder.append(NEW_LINE);
-        builder.append("Enter one of the following commands to continue:");
+        builder.append("Enter one of the following commands to proceed:");
         builder.append(NEW_LINE);
 
-        for (Instruction instruction: instructions.values()) {
-            builder.append(NEW_LINE);
-            builder.append(instruction.getInstructionMenuMessage());
-            builder.append(NEW_LINE);
+        for (Instruction instruction : instructions.values()) {
+            String message = instruction.getInstructionMenuMessage();
+            if (message != null) {
+                builder.append(NEW_LINE);
+                builder.append(" # ");
+                builder.append(message);
+            }
         }
 
         return builder.toString();
@@ -58,14 +67,16 @@ public class Menu {
 
         StringBuilder builder = new StringBuilder();
         for (String inputCommand : instructions.keySet()) {
-            builder.append(inputCommand);
-            builder.append(",");
+            if (instructions.get(inputCommand).getInstructionMenuMessage() != null) {
+                builder.append(inputCommand);
+                builder.append(",");
+            }
         }
 
         //Remove last comma
-        builder.deleteCharAt(builder.length()-1);
+        builder.deleteCharAt(builder.length() - 1);
 
-        return String.format("(%s): ", builder.toString());
+        return String.format("\n(%s): ", builder.toString());
     }
 
     private Instruction determineNextOperation(String input) {
