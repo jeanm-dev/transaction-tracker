@@ -8,6 +8,8 @@ import com.training.java.transaction.tracker.repository.TransactionRepository;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ListInstruction implements Instruction {
@@ -16,11 +18,11 @@ public class ListInstruction implements Instruction {
     private InstructionDescription instructionDescription;
     private TransactionRepository transactionRepository;
 
-    public ListInstruction(TransactionRepository transactionRepository, PrintStream printStream) {
+    public ListInstruction(String command, TransactionRepository transactionRepository, PrintStream printStream) {
         this.transactionRepository = transactionRepository;
         this.printStream = printStream;
 
-        instructionDescription = new ListInstructionDescription("L");
+        instructionDescription = new ListInstructionDescription(command);
     }
 
     @Override
@@ -57,8 +59,12 @@ public class ListInstruction implements Instruction {
 
     private void printTransactionLine(Transaction transaction) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        Format dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), decimalFormat.format(transaction.getAmount()), transaction.getDateOfTransaction());
+        String formattedAmount = decimalFormat.format(transaction.getAmount());
+        String formattedDate =  dateFormatter.format(transaction.getDateOfTransaction());
+
+        String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
         printStream.println(transactionLine);
     }
 

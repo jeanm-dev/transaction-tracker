@@ -7,8 +7,8 @@ public class ExitInstruction implements Instruction {
 
     private InstructionDescription instructionDescription;
 
-    public ExitInstruction() {
-        instructionDescription = new ExitInstructionDescription("E");
+    public ExitInstruction(String command) {
+        instructionDescription = new ExitInstructionDescription(command);
     }
 
     @Override
