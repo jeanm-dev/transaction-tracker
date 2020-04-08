@@ -4,5 +4,6 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 public interface Instruction {
 
     void perform();
+
     String getInstructionMenuMessage();
 }

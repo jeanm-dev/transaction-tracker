@@ -5,11 +5,9 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 
 public class ExitInstruction implements Instruction {
 
-    private int returnValue;
     private InstructionDescription instructionDescription;
 
     public ExitInstruction() {
-        this.returnValue = 0;
         instructionDescription = new ExitInstructionDescription("E");
     }
 
@@ -25,6 +23,6 @@ public class ExitInstruction implements Instruction {
     @Override
     public void perform() {
         System.out.println(getInstructionResultMessage());
-        System.exit(returnValue);
+        System.exit(0);
     }
 }

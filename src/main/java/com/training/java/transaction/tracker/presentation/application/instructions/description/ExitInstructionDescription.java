@@ -7,7 +7,7 @@ public class ExitInstructionDescription implements InstructionDescription {
 
     public ExitInstructionDescription(String command) {
         this.command = command;
-        this.description =  "Exits the application"; //TODO: Load from resource bundle
+        this.description = "Exits the application"; //TODO: Load from resource bundle
     }
 
     @Override
