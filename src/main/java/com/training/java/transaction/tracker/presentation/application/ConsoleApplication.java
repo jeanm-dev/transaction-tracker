@@ -31,10 +31,12 @@ public class ConsoleApplication {
     }
 
     private static TransactionRepository createTransactionRepository() {
-        //TODO: Load from Properties
-        String connectionString = "jdbc:mysql://localhost:3306/TransactionTracker";
-        String username = "root";
-        String password = "my-secret";
+        // Load Configuration for database from Properties
+        ConfigurationLoader configurationLoader = ConfigurationLoader.getInstance();
+
+        String connectionString = configurationLoader.getConnectionString();
+        String username = configurationLoader.getUsername();
+        String password = configurationLoader.getPassword();
 
         Database database = new MySQLDatabase(connectionString, username, password);
         TransactionRepository repository = new TransactionRepositoryImplementation(database);
