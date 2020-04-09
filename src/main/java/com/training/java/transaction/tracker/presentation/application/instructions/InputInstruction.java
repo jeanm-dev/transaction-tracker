@@ -3,29 +3,27 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 import com.training.java.transaction.tracker.domainobject.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InputInstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
+import com.training.java.transaction.tracker.presentation.interaction.InvalidInputException;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
-import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class InputInstruction implements Instruction {
 
+    private CommandLine commandLine;
     private InstructionDescription instructionDescription;
     private TransactionRepository transactionRepository;
-    private PrintStream printStream;
-    private Scanner scanner;
 
     private List<String> inputFields;
 
-    public InputInstruction(String command, TransactionRepository transactionRepository, PrintStream printStream, Scanner scanner) {
+    public InputInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
-        this.printStream = printStream;
-        this.scanner = scanner;
+        this.commandLine = commandLine;
 
         instructionDescription = new InputInstructionDescription(command);
         inputFields = List.of("Description", "Amount", "Date of Transaction");
@@ -60,51 +58,43 @@ public class InputInstruction implements Instruction {
         try {
             transactionRepository.addTransaction(transaction);
         } catch (SQLException exception) {
-            printStream.println("Unable to store transaction!");
-            printStream.println("Please try again!");
+            commandLine.printWithNewLine("Unable to store transaction!");
+            commandLine.printWithNewLine("Please try again!");
         }
     }
 
     private void printInstructions(List<String> inputFields) {
-        printStream.println("Please enter the following values:");
+        commandLine.printWithNewLine("Please enter the following values:");
 
         for (String inputField : inputFields) {
-            printStream.println(String.format(" # %s:", inputField));
+            commandLine.printWithNewLine(String.format(" # %s:", inputField));
         }
     }
 
     //TODO: Refactor into Reusable component - START
     private String retrieveDescription() {
-        printStream.println(createInputMessageForField(inputFields.get(0)));
-        return scanner.nextLine();
+        commandLine.printWithNewLine(createInputMessageForField(inputFields.get(0)));
+        return commandLine.readLine();
     }
 
     private BigDecimal retrieveAmount() {
-        printStream.println(createInputMessageForField(inputFields.get(1)));
+        commandLine.printWithNewLine(createInputMessageForField(inputFields.get(1)));
+
         try {
-            BigDecimal value = scanner.nextBigDecimal();
-
-            scanner.nextLine(); //Clears input
-
-            return value;
+            return commandLine.readBigDecimal();
         } catch (Exception exception) {
-            printStream.println("Invalid amount entered!\nPlease enter a value with a valid format!\n\t0.00");
-            scanner.nextLine();
+            commandLine.printWithNewLine(exception.getMessage());
             return retrieveAmount();
         }
     }
 
     private Date retrieveDateOfTransaction() {
-        printStream.println(createInputMessageForField(inputFields.get(2)));
-        Format dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        String input = scanner.nextLine();
+        commandLine.printWithNewLine(createInputMessageForField(inputFields.get(2)));
 
         try {
-            return (Date) dateFormatter.parseObject(input);
-        } catch (ParseException exception) {
-            printStream.println("Invalid date format! Please a date value that matches (YYYY-MM-DD)");
-//            exception.printStackTrace();
+            return commandLine.readDate();
+        } catch (InvalidInputException exception) {
+            commandLine.printWithNewLine(exception.getMessage());
             return retrieveDateOfTransaction();
         }
     }
@@ -132,6 +122,6 @@ public class InputInstruction implements Instruction {
         String formattedDate = dateFormatter.format(transaction.getDateOfTransaction());
 
         String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
-        printStream.println(transactionLine);
+        commandLine.printWithNewLine(transactionLine);
     }
 }

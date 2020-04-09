@@ -2,6 +2,8 @@ package com.training.java.transaction.tracker.presentation.application;
 
 import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.data.MySQLDatabase;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLineImplementation;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 import com.training.java.transaction.tracker.repository.TransactionRepositoryImplementation;
 
@@ -15,8 +17,9 @@ public class ConsoleApplication {
         printWelcomeMessage();
 
         Scanner scanner = new Scanner(System.in);
+        CommandLine commandLine = new CommandLineImplementation(System.out, scanner);
 
-        Menu coordinator = new Menu(scanner, System.out, createTransactionRepository());
+        Menu coordinator = new Menu(scanner, System.out, createTransactionRepository(), commandLine);
         coordinator.start();
     }
 

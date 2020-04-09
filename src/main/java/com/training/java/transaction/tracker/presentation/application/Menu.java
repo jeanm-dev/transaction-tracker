@@ -1,6 +1,7 @@
 package com.training.java.transaction.tracker.presentation.application;
 
 import com.training.java.transaction.tracker.presentation.application.instructions.*;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
@@ -10,6 +11,7 @@ import java.util.Scanner;
 
 public class Menu {
 
+    private final CommandLine commandLine;
     private Scanner scanner;
     private PrintStream printStream;
     private TransactionRepository transactionRepository;
@@ -17,9 +19,10 @@ public class Menu {
 
     private static final String NEW_LINE = "\n";
 
-    public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository) {
+    public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository, CommandLine commandLine) {
         this.scanner = scanner;
         this.printStream = printStream;
+        this.commandLine = commandLine;
         this.transactionRepository = transactionRepository;
 
         instructions = new HashMap<>();
@@ -29,7 +32,7 @@ public class Menu {
     private void registerInstructions() {
         registerInstruction(new ExitInstruction("X"));
         registerInstruction(new ListInstruction("L", transactionRepository, printStream));
-        registerInstruction(new InputInstruction("I", transactionRepository, printStream, scanner));
+        registerInstruction(new InputInstruction("I", transactionRepository, commandLine));
         registerInstruction(new EditIntruction("E", transactionRepository, printStream, scanner));
         registerInstruction(new DeleteInstruction("D", transactionRepository, printStream, scanner));
     }
