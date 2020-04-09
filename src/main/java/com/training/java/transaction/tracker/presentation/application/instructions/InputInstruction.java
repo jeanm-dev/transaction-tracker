@@ -1,8 +1,8 @@
 package com.training.java.transaction.tracker.presentation.application.instructions;
 
 import com.training.java.transaction.tracker.domainobject.Transaction;
+import com.training.java.transaction.tracker.presentation.application.instructions.description.InputInstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
-import com.training.java.transaction.tracker.presentation.application.instructions.description.ListInstructionDescription;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
@@ -27,7 +27,7 @@ public class InputInstruction implements Instruction {
         this.printStream = printStream;
         this.scanner = scanner;
 
-        instructionDescription = new ListInstructionDescription(command);
+        instructionDescription = new InputInstructionDescription(command);
         inputFields = List.of("Description", "Amount", "Date of Transaction");
     }
 
