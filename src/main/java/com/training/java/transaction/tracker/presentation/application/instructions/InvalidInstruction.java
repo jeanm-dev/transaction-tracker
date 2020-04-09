@@ -19,6 +19,11 @@ public class InvalidInstruction implements Instruction {
     }
 
     @Override
+    public String getCommand() {
+        return null;
+    }
+
+    @Override
     public String getInstructionMenuDescription() {
         return null;
     }

@@ -115,6 +115,11 @@ public class InputInstruction implements Instruction {
     }
 
     @Override
+    public String getCommand() {
+        return instructionDescription.getCommand();
+    }
+
+    @Override
     public String getInstructionMenuDescription() {
         return instructionDescription.getMenuDescription();
     }

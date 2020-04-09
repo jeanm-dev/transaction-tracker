@@ -12,6 +12,11 @@ public class ExitInstruction implements Instruction {
     }
 
     @Override
+    public String getCommand() {
+        return instructionDescription.getCommand();
+    }
+
+    @Override
     public String getInstructionMenuDescription() {
         return instructionDescription.getMenuDescription();
     }

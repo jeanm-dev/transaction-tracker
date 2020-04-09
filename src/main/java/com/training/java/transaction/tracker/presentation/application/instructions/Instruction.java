@@ -5,5 +5,6 @@ public interface Instruction {
 
     void perform();
 
+    String getCommand();
     String getInstructionMenuDescription();
 }

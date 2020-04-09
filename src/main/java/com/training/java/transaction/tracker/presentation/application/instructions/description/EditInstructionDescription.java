@@ -12,6 +12,11 @@ public class EditInstructionDescription implements InstructionDescription {
     }
 
     @Override
+    public String getCommand() {
+        return command;
+    }
+
+    @Override
     public String getMenuDescription() {
 
         return String.format("%s - %s", command, description);

@@ -4,6 +4,7 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ public class Menu {
 
     private Scanner scanner;
     private PrintStream printStream;
+    private TransactionRepository transactionRepository;
     private Map<String, Instruction> instructions;
 
     private static final String NEW_LINE = "\n";
@@ -18,15 +20,22 @@ public class Menu {
     public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository) {
         this.scanner = scanner;
         this.printStream = printStream;
+        this.transactionRepository = transactionRepository;
 
-        // TODO: Build this dynamically
-        this.instructions = Map.of(
-                "X", new ExitInstruction("X"),
-                "L", new ListInstruction("L", transactionRepository, printStream),
-                "I", new InputInstruction("I", transactionRepository, printStream, scanner),
-                "E", new EditIntruction("E", transactionRepository, printStream, scanner),
-                "D", new DeleteInstruction("D", transactionRepository, printStream, scanner)
-        );
+        instructions = new HashMap<>();
+        registerInstructions();
+    }
+
+    private void registerInstructions() {
+        registerInstruction(new ExitInstruction("X"));
+        registerInstruction(new ListInstruction("L", transactionRepository, printStream));
+        registerInstruction(new InputInstruction("I", transactionRepository, printStream, scanner));
+        registerInstruction(new EditIntruction("E", transactionRepository, printStream, scanner));
+        registerInstruction(new DeleteInstruction("D", transactionRepository, printStream, scanner));
+    }
+
+    private void registerInstruction(Instruction instruction) {
+        instructions.put(instruction.getCommand(), instruction);
     }
 
     private String createInstructionMessage(Map<String, Instruction> instructions) {

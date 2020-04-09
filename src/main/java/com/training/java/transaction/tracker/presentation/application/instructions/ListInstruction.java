@@ -42,6 +42,11 @@ public class ListInstruction implements Instruction {
         }
     }
 
+    @Override
+    public String getCommand() {
+        return instructionDescription.getCommand();
+    }
+
     private void printTransactions(List<Transaction> transactions) {
         printHeading();
 
