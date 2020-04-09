@@ -11,8 +11,6 @@ public class Menu {
 
     private Scanner scanner;
     private PrintStream printStream;
-    private TransactionRepository transactionRepository;
-
     private Map<String, Instruction> instructions;
 
     private static final String NEW_LINE = "\n";
@@ -20,8 +18,6 @@ public class Menu {
     public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository) {
         this.scanner = scanner;
         this.printStream = printStream;
-
-        this.transactionRepository = transactionRepository;
 
         // TODO: Build this dynamically
         this.instructions = Map.of(
