@@ -28,7 +28,8 @@ public class Menu {
                 "X", new ExitInstruction("X"),
                 "L", new ListInstruction("L", transactionRepository, printStream),
                 "I", new InputInstruction("I", transactionRepository, printStream, scanner),
-                "E", new EditIntruction("E", transactionRepository, printStream, scanner)
+                "E", new EditIntruction("E", transactionRepository, printStream, scanner),
+                "D", new DeleteInstruction("D", transactionRepository, printStream, scanner)
         );
     }
 
