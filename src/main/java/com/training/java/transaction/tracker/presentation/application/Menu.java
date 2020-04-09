@@ -39,7 +39,7 @@ public class Menu {
         builder.append(NEW_LINE);
 
         for (Instruction instruction : instructions.values()) {
-            String message = instruction.getInstructionMenuMessage();
+            String message = instruction.getInstructionMenuDescription();
             if (message != null) {
                 builder.append(NEW_LINE);
                 builder.append(" # ");
@@ -65,7 +65,7 @@ public class Menu {
 
         StringBuilder builder = new StringBuilder();
         for (String inputCommand : instructions.keySet()) {
-            if (instructions.get(inputCommand).getInstructionMenuMessage() != null) {
+            if (instructions.get(inputCommand).getInstructionMenuDescription() != null) {
                 builder.append(inputCommand);
                 builder.append(",");
             }

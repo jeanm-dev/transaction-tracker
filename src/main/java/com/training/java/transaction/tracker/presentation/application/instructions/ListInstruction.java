@@ -78,7 +78,7 @@ public class ListInstruction implements Instruction {
 
 
     @Override
-    public String getInstructionMenuMessage() {
-        return instructionDescription.getInstructionDescription();
+    public String getInstructionMenuDescription() {
+        return instructionDescription.getMenuDescription();
     }
 }

@@ -11,7 +11,7 @@ public class ExitInstructionDescription implements InstructionDescription {
     }
 
     @Override
-    public String getInstructionDescription() {
+    public String getMenuDescription() {
         return String.format("%s - %s", command, description);
     }
 }

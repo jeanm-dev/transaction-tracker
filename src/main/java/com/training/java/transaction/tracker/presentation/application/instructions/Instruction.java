@@ -5,5 +5,5 @@ public interface Instruction {
 
     void perform();
 
-    String getInstructionMenuMessage();
+    String getInstructionMenuDescription();
 }

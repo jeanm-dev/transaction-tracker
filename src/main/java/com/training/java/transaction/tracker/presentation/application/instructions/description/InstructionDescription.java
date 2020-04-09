@@ -2,5 +2,5 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 
 public interface InstructionDescription {
 
-    String getInstructionDescription();
+    String getMenuDescription();
 }

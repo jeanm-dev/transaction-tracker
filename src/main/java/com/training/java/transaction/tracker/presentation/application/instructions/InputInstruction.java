@@ -5,7 +5,6 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 import com.training.java.transaction.tracker.presentation.application.instructions.description.ListInstructionDescription;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
-import javax.swing.text.DateFormatter;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -114,8 +113,8 @@ public class InputInstruction implements Instruction {
     }
 
     @Override
-    public String getInstructionMenuMessage() {
-        return instructionDescription.getInstructionDescription();
+    public String getInstructionMenuDescription() {
+        return instructionDescription.getMenuDescription();
     }
 
     private void printTransactionLine(Transaction transaction) {

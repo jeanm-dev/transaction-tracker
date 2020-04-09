@@ -12,8 +12,8 @@ public class ExitInstruction implements Instruction {
     }
 
     @Override
-    public String getInstructionMenuMessage() {
-        return instructionDescription.getInstructionDescription();
+    public String getInstructionMenuDescription() {
+        return instructionDescription.getMenuDescription();
     }
 
     private String getInstructionResultMessage() {
