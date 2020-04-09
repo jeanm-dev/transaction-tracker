@@ -73,6 +73,7 @@ public class InputInstruction implements Instruction {
         }
     }
 
+    //TODO: Refactor into Reusable component - START
     private String retrieveDescription() {
         printStream.println(createInputMessageForField(inputFields.get(0)));
         return scanner.nextLine();
@@ -103,10 +104,11 @@ public class InputInstruction implements Instruction {
             return (Date) dateFormatter.parseObject(input);
         } catch (ParseException exception) {
             printStream.println("Invalid date format! Please a date value that matches (YYYY-MM-DD)");
-            exception.printStackTrace();
+//            exception.printStackTrace();
             return retrieveDateOfTransaction();
         }
     }
+    //TODO: Refactor into Reusable component - END
 
     private String createInputMessageForField(String field) {
         return String.format("\n(%s): ", field);

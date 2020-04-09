@@ -25,9 +25,10 @@ public class Menu {
 
         // TODO: Build this dynamically
         this.instructions = Map.of(
-                "E", new ExitInstruction("E"),
+                "X", new ExitInstruction("X"),
                 "L", new ListInstruction("L", transactionRepository, printStream),
-                "I", new InputInstruction("I", transactionRepository, printStream, scanner)
+                "I", new InputInstruction("I", transactionRepository, printStream, scanner),
+                "E", new EditIntruction("E", transactionRepository, printStream, scanner)
         );
     }
 
