@@ -74,4 +74,12 @@ public class CommandLineImplementation implements CommandLine {
             throw new InvalidInputException(exceptionDescription);
         }
     }
+
+    @Override
+    public int readInt() {
+        int returnValue = scanner.nextInt();
+        scanner.nextLine(); //Clears input
+
+        return returnValue;
+    }
 }

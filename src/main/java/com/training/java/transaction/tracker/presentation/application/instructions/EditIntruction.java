@@ -3,6 +3,8 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 import com.training.java.transaction.tracker.domainobject.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.EditInstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
+import com.training.java.transaction.tracker.presentation.interaction.InvalidInputException;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
@@ -18,15 +20,13 @@ import java.util.Scanner;
 
 public class EditIntruction implements Instruction {
 
-    private final PrintStream printStream;
-    private final Scanner scanner;
+    private final CommandLine commandLine;
     private InstructionDescription instructionDescription;
     private TransactionRepository transactionRepository;
 
-    public EditIntruction(String command, TransactionRepository transactionRepository, PrintStream printStream, Scanner scanner) {
+    public EditIntruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
-        this.printStream = printStream;
-        this.scanner = scanner;
+        this.commandLine = commandLine;
 
         instructionDescription = new EditInstructionDescription(command);
     }
@@ -37,7 +37,7 @@ public class EditIntruction implements Instruction {
         int numberOfTransactions = fetchNumberOfTransactions();
 
         if (numberOfTransactions <= 0) {
-            printStream.println("No transactions available to edit!");
+            commandLine.printWithNewLine("No transactions available to edit!");
             return;
         }
 
@@ -45,7 +45,7 @@ public class EditIntruction implements Instruction {
         int indexOfSelectedTransaction = 0;
         if (numberOfTransactions > 1) {
             //Ask user which transaction they wish to edit?
-            String prompt = String.format("Index in range(%s-%s):", 1, numberOfTransactions + 1);
+            String prompt = String.format("Index in range(%s-%s):", 1, numberOfTransactions);
             indexOfSelectedTransaction = retrieveIndexOfTransaction(prompt) - 1;
         }
 
@@ -62,8 +62,8 @@ public class EditIntruction implements Instruction {
         String currentDate = dateFormatter.format(transaction.getDateOfTransaction());
         Date newDateOfTransaction = retrieveDateOfTransaction(currentDate);
 
-        // TODO: Prompt are you sure Y/N?
-        printStream.println("Are you sure you would like to update this transaction?");
+        // Prompt are you sure Y/N?
+        commandLine.printWithNewLine("Are you sure you would like to update this transaction?");
         List<String> optionList = List.of("Y", "N");
         String selectedOption = retrieveMatchingInput(optionList);
 
@@ -73,9 +73,9 @@ public class EditIntruction implements Instruction {
             transaction.setAmount(newAmount);
             transaction.setDateOfTransaction(newDateOfTransaction);
             updateTransaction(transaction);
-            printStream.println("Transaction was updated successfully!");
+            commandLine.printWithNewLine("Transaction was updated successfully!");
         } else {
-            printStream.println("Updates were not saved!");
+            commandLine.printWithNewLine("Updates were not saved!");
         }
     }
 
@@ -85,7 +85,7 @@ public class EditIntruction implements Instruction {
             List<Transaction> transactions = transactionRepository.fetchAllTransactions();
             transaction = transactions.get(index);
         } catch (SQLException exception) {
-            printStream.println("Unable to fetch number of transactions from the database");
+            commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }
         return transaction;
     }
@@ -95,7 +95,7 @@ public class EditIntruction implements Instruction {
         try {
             numberOfTransactions = transactionRepository.fetchAllTransactions().size();
         } catch (SQLException exception) {
-            printStream.println("Unable to fetch number of transactions from the database");
+            commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }
         return numberOfTransactions;
     }
@@ -104,7 +104,7 @@ public class EditIntruction implements Instruction {
         try {
             transactionRepository.updateTransaction(transaction);
         } catch (SQLException e) {
-            printStream.println("Unable to save updates!\nPlease try again later!");
+            commandLine.printWithNewLine("Unable to save updates!\nPlease try again later!");
 //            e.printStackTrace();
         }
     }
@@ -135,59 +135,46 @@ public class EditIntruction implements Instruction {
 
     private String retrieveMatchingInput(List<String> expectedInputs) {
         String optionsMessage = createInputMessageMatchingInputs(expectedInputs);
-        printStream.println(createInputMessageForField(optionsMessage));
+        commandLine.printWithNewLine(createInputMessageForField(optionsMessage));
 
-        String input = scanner.nextLine();
+        String input = commandLine.readLine();
 
         if (expectedInputs.contains(input)) {
             return input;
         } else {
-            printStream.print("Invalid input!\nPlease select one of the following options! ");
-            printStream.println(optionsMessage);
+            commandLine.print("Invalid input!\nPlease select one of the following options! ");
+            commandLine.printWithNewLine(optionsMessage);
             return retrieveMatchingInput(expectedInputs);
         }
     }
 
     private int retrieveIndexOfTransaction(String inputPrefix) {
-        printStream.println(createInputMessageForField(inputPrefix));
-
-        int returnValue = scanner.nextInt();
-        scanner.nextLine(); //Clears input
-
-        return returnValue;
+        commandLine.printWithNewLine(createInputMessageForField(inputPrefix));
+        return commandLine.readInt();
     }
 
     private String retrieveDescription(String inputPrefix) {
-        printStream.println(createInputMessageForField(inputPrefix));
-        return scanner.nextLine();
+        commandLine.printWithNewLine(createInputMessageForField(inputPrefix));
+        return commandLine.readLine();
     }
 
     private BigDecimal retrieveAmount(String inputPrefix) {
-        printStream.println(createInputMessageForField(inputPrefix));
+        commandLine.printWithNewLine(createInputMessageForField(inputPrefix));
         try {
-            BigDecimal value = scanner.nextBigDecimal();
-
-            scanner.nextLine(); //Clears input
-
-            return value;
-        } catch (Exception exception) {
-            printStream.println("Invalid amount entered!\nPlease enter a value with a valid format!\n\t0.00");
-            scanner.nextLine();
+            return commandLine.readBigDecimal();
+        } catch (InvalidInputException exception) {
+            commandLine.printWithNewLine(exception.getMessage());
             return retrieveAmount(inputPrefix);
         }
     }
 
     private Date retrieveDateOfTransaction(String inputPrefix) {
-        printStream.println(createInputMessageForField(inputPrefix));
-        Format dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        String input = scanner.nextLine();
+        commandLine.printWithNewLine(createInputMessageForField(inputPrefix));
 
         try {
-            return (Date) dateFormatter.parseObject(input);
-        } catch (ParseException exception) {
-            printStream.println("Invalid date format! Please a date value that matches (YYYY-MM-DD)");
-//            exception.printStackTrace();
+            return commandLine.readDate();
+        } catch (InvalidInputException exception) {
+            commandLine.printWithNewLine(exception.getMessage());
             return retrieveDateOfTransaction(inputPrefix);
         }
     }

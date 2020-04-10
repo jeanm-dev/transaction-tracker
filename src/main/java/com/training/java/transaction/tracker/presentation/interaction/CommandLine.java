@@ -12,4 +12,5 @@ public interface CommandLine {
     String readLine();
     BigDecimal readBigDecimal() throws InvalidInputException;
     Date readDate() throws InvalidInputException;
+    int readInt();
 }
