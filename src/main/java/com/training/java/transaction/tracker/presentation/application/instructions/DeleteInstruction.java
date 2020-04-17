@@ -7,6 +7,9 @@ import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,6 +50,7 @@ public class DeleteInstruction implements Instruction {
         Transaction transaction = fetchTransaction(indexOfSelectedTransaction);
 
         // Prompt are you sure Y/N?
+        printTransactionLine(transaction);
         printStream.println("Are you sure you would like to update this transaction?");
         List<String> optionList = List.of("Y", "N");
         String selectedOption = retrieveMatchingInput(optionList);
@@ -139,6 +143,18 @@ public class DeleteInstruction implements Instruction {
 
     private String createInputMessageForField(String field) {
         return String.format("\n(%s): ", field);
+    }
+
+    private void printTransactionLine(Transaction transaction) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        Format dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        String formattedAmount = decimalFormat.format(transaction.getAmount());
+        String formattedDate = dateFormatter.format(transaction.getDateOfTransaction());
+
+        String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
+        printStream.println(transactionLine);
+        printStream.println();
     }
     //TODO: Refactor into Reusable component - END
 }
