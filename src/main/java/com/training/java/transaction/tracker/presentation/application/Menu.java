@@ -4,24 +4,18 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class Menu {
 
     private final CommandLine commandLine;
-    private Scanner scanner;
-    private PrintStream printStream;
     private TransactionRepository transactionRepository;
     private Map<String, Instruction> instructions;
 
     private static final String NEW_LINE = "\n";
 
-    public Menu(Scanner scanner, PrintStream printStream, TransactionRepository transactionRepository, CommandLine commandLine) {
-        this.scanner = scanner;
-        this.printStream = printStream;
+    public Menu(TransactionRepository transactionRepository, CommandLine commandLine) {
         this.commandLine = commandLine;
         this.transactionRepository = transactionRepository;
 
@@ -62,13 +56,13 @@ public class Menu {
 
     private void displayMenu() {
         // Output menu
-        printStream.println(createInstructionMessage(instructions));
+        commandLine.printWithNewLine(createInstructionMessage(instructions));
 
     }
 
     private String retrieveUserInput() {
-        printStream.println(createInputMessage());
-        return scanner.nextLine();
+        commandLine.printWithNewLine(createInputMessage());
+        return commandLine.readLine();
     }
 
     private String createInputMessage() {

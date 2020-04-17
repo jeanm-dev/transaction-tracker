@@ -19,7 +19,7 @@ public class ConsoleApplication {
         Scanner scanner = new Scanner(System.in);
         CommandLine commandLine = new CommandLineImplementation(System.out, scanner);
 
-        Menu coordinator = new Menu(scanner, System.out, createTransactionRepository(), commandLine);
+        Menu coordinator = new Menu(createTransactionRepository(), commandLine);
         coordinator.start();
     }
 
