@@ -19,7 +19,8 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String AMOUNT_COLUMN = "amount";
     private static final String DATE_OF_TRANSACTION_COLUMN = "dateOfTransaction";
 
-    private static final String ADD_STATEMENT = String.format("INSERT INTO %s (%s, %s, %S) VALUES (?, ?, ?)", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
+    //TODO: Use Hardcoded strings instead - could be useful down the line to add generics
+    private static final String ADD_STATEMENT = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
     private static final String DELETE_STATEMENT = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, TRANSACTION_ID_COLUMN);
     private static final String UPDATE_STATEMENT = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TRANSACTION_ID_COLUMN);
     private static final String SELECT_ALL_STATEMENT = String.format("SELECT %s, %s, %s, %s FROM %s", TRANSACTION_ID_COLUMN, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TABLE_NAME);
@@ -34,7 +35,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     public void addTransaction(Transaction transaction) throws SQLException {
         Connection connection = database.getConnection();
 
-        Date transactionDate = new Date(transaction.getDateOfTransaction().getTime());
+        //TODO: Fix time bug - Possibly related to timezone difference between DB and Local machine
+        java.util.Date date = transaction.getDateOfTransaction();
+//        date.toInstant(); //TODO: Investigate instant as solution
+
+        Date transactionDate = new Date(date.getTime());
 
         PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT);
         preparedStatement.setString(1, transaction.getDescription());
