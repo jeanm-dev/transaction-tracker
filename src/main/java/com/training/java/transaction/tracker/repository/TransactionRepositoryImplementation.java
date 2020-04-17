@@ -102,10 +102,10 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
 
             Transaction transaction = new Transaction();
 
-            transaction.setAmount(resultSet.getBigDecimal("amount"));
-            transaction.setDescription(resultSet.getString("description"));
-            transaction.setDateOfTransaction(resultSet.getDate("dateOfTransaction"));
-            transaction.setIdentifier(resultSet.getInt("transactionId"));
+            transaction.setAmount(resultSet.getBigDecimal(AMOUNT_COLUMN));
+            transaction.setDescription(resultSet.getString(DESCRIPTION_COLUMN));
+            transaction.setDateOfTransaction(resultSet.getDate(DATE_OF_TRANSACTION_COLUMN));
+            transaction.setIdentifier(resultSet.getInt(TRANSACTION_ID_COLUMN));
 
             return transaction;
         }
