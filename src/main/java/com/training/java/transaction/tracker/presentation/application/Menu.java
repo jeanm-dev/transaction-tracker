@@ -34,7 +34,7 @@ public class Menu {
         registerInstruction(new ListInstruction("L", transactionRepository, printStream));
         registerInstruction(new InputInstruction("I", transactionRepository, commandLine));
         registerInstruction(new EditIntruction("E", transactionRepository, commandLine));
-        registerInstruction(new DeleteInstruction("D", transactionRepository, printStream, scanner));
+        registerInstruction(new DeleteInstruction("D", transactionRepository, commandLine));
     }
 
     private void registerInstruction(Instruction instruction) {

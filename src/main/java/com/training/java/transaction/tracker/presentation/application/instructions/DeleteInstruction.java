@@ -3,27 +3,24 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 import com.training.java.transaction.tracker.domainobject.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.DeleteInstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
-import java.io.PrintStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Scanner;
 
 public class DeleteInstruction implements Instruction {
 
     private final TransactionRepository transactionRepository;
-    private final PrintStream printStream;
-    private final Scanner scanner;
+    private final CommandLine commandLine;
     private InstructionDescription instructionDescription;
 
-    public DeleteInstruction(String command, TransactionRepository transactionRepository, PrintStream printStream, Scanner scanner) {
+    public DeleteInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
-        this.printStream = printStream;
-        this.scanner = scanner;
+        this.commandLine = commandLine;
 
         instructionDescription = new DeleteInstructionDescription(command);
     }
@@ -34,7 +31,7 @@ public class DeleteInstruction implements Instruction {
         int numberOfTransactions = fetchNumberOfTransactions();
 
         if (numberOfTransactions <= 0) {
-            printStream.println("No transactions available to edit!");
+            commandLine.printWithNewLine("No transactions available to edit!");
             return;
         }
 
@@ -51,16 +48,16 @@ public class DeleteInstruction implements Instruction {
 
         // Prompt are you sure Y/N?
         printTransactionLine(transaction);
-        printStream.println("Are you sure you would like to update this transaction?");
+        commandLine.printWithNewLine("Are you sure you would like to update this transaction?");
         List<String> optionList = List.of("Y", "N");
         String selectedOption = retrieveMatchingInput(optionList);
 
         if (optionList.indexOf(selectedOption) == 0) {
             // Delete transaction from database
             deleteTransaction(transaction);
-            printStream.println("Transaction was deleted successfully!");
+            commandLine.printWithNewLine("Transaction was deleted successfully!");
         } else {
-            printStream.println("Transaction was not deleted!");
+            commandLine.printWithNewLine("Transaction was not deleted!");
         }
     }
 
@@ -68,7 +65,7 @@ public class DeleteInstruction implements Instruction {
         try {
             transactionRepository.removeTransaction(transaction.getIdentifier());
         } catch (SQLException exception) {
-            printStream.println("Unable to remove transaction!\nPlease try again!");
+            commandLine.printWithNewLine("Unable to remove transaction!\nPlease try again!");
 //            exception.printStackTrace();
         }
     }
@@ -79,7 +76,7 @@ public class DeleteInstruction implements Instruction {
             List<Transaction> transactions = transactionRepository.fetchAllTransactions();
             transaction = transactions.get(index);
         } catch (SQLException exception) {
-            printStream.println("Unable to fetch number of transactions from the database");
+            commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }
         return transaction;
     }
@@ -89,7 +86,7 @@ public class DeleteInstruction implements Instruction {
         try {
             numberOfTransactions = transactionRepository.fetchAllTransactions().size();
         } catch (SQLException exception) {
-            printStream.println("Unable to fetch number of transactions from the database");
+            commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }
         return numberOfTransactions;
     }
@@ -119,26 +116,22 @@ public class DeleteInstruction implements Instruction {
 
     private String retrieveMatchingInput(List<String> expectedInputs) {
         String optionsMessage = createInputMessageMatchingInputs(expectedInputs);
-        printStream.println(createInputMessageForField(optionsMessage));
+        commandLine.printWithNewLine(createInputMessageForField(optionsMessage));
 
-        String input = scanner.nextLine();
+        String input = commandLine.readLine();
 
         if (expectedInputs.contains(input)) {
             return input;
         } else {
-            printStream.print("Invalid input!\nPlease select one of the following options! ");
-            printStream.println(optionsMessage);
+            commandLine.print("Invalid input!\nPlease select one of the following options! ");
+            commandLine.printWithNewLine(optionsMessage);
             return retrieveMatchingInput(expectedInputs);
         }
     }
 
     private int retrieveIndexOfTransaction(String inputPrefix) {
-        printStream.println(createInputMessageForField(inputPrefix));
-
-        int returnValue = scanner.nextInt();
-        scanner.nextLine(); //Clears input
-
-        return returnValue;
+        commandLine.printWithNewLine(createInputMessageForField(inputPrefix));
+        return commandLine.readInt();
     }
 
     private String createInputMessageForField(String field) {
@@ -153,8 +146,8 @@ public class DeleteInstruction implements Instruction {
         String formattedDate = dateFormatter.format(transaction.getDateOfTransaction());
 
         String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
-        printStream.println(transactionLine);
-        printStream.println();
+        commandLine.printWithNewLine(transactionLine);
+        commandLine.printNewLine();
     }
     //TODO: Refactor into Reusable component - END
 }
