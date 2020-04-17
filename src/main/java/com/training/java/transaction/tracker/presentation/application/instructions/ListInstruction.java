@@ -3,9 +3,9 @@ package com.training.java.transaction.tracker.presentation.application.instructi
 import com.training.java.transaction.tracker.domainobject.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.ListInstructionDescription;
+import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 
-import java.io.PrintStream;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -14,13 +14,13 @@ import java.util.List;
 
 public class ListInstruction implements Instruction {
 
-    private PrintStream printStream;
-    private InstructionDescription instructionDescription;
-    private TransactionRepository transactionRepository;
+    private final CommandLine commandLine;
+    private final InstructionDescription instructionDescription;
+    private final TransactionRepository transactionRepository;
 
-    public ListInstruction(String command, TransactionRepository transactionRepository, PrintStream printStream) {
+    public ListInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
-        this.printStream = printStream;
+        this.commandLine = commandLine;
 
         instructionDescription = new ListInstructionDescription(command);
     }
@@ -37,8 +37,8 @@ public class ListInstruction implements Instruction {
             }
 
         } catch (SQLException exception) {
-            printStream.println("Unable to fetch transactions!");
-            printStream.println("Check database configuration or readable!");
+            commandLine.printWithNewLine("Unable to fetch transactions!");
+            commandLine.printWithNewLine("Check database configuration or readable!");
         }
     }
 
@@ -59,7 +59,7 @@ public class ListInstruction implements Instruction {
 
     private void printHeading() {
         String headingLine = String.format("%s \t %s \t %s", "DESCRIPTION", "AMOUNT", "DATE OF TRANSACTION");
-        printStream.println(headingLine);
+        commandLine.printWithNewLine(headingLine);
     }
 
     private void printTransactionLine(Transaction transaction) {
@@ -70,15 +70,15 @@ public class ListInstruction implements Instruction {
         String formattedDate =  dateFormatter.format(transaction.getDateOfTransaction());
 
         String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
-        printStream.println(transactionLine);
+        commandLine.printWithNewLine(transactionLine);
     }
 
     private void printTransactionCount(int count) {
-        printStream.println(String.format("\nTotal number of transactions: %d", count));
+        commandLine.printWithNewLine(String.format("\nTotal number of transactions: %d", count));
     }
 
     private void printNoTransactionsFoundMessage() {
-        printStream.println("No transactions found!");
+        commandLine.printWithNewLine("No transactions found!");
     }
 
 

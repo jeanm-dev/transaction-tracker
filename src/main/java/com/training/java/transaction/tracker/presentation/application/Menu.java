@@ -31,7 +31,7 @@ public class Menu {
 
     private void registerInstructions() {
         registerInstruction(new ExitInstruction("X"));
-        registerInstruction(new ListInstruction("L", transactionRepository, printStream));
+        registerInstruction(new ListInstruction("L", transactionRepository, commandLine));
         registerInstruction(new InputInstruction("I", transactionRepository, commandLine));
         registerInstruction(new EditIntruction("E", transactionRepository, commandLine));
         registerInstruction(new DeleteInstruction("D", transactionRepository, commandLine));
