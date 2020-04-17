@@ -39,7 +39,7 @@ public class DeleteInstruction implements Instruction {
         int indexOfSelectedTransaction = 0;
         if (numberOfTransactions > 1) {
             //Ask user which transaction they wish to edit?
-            String prompt = String.format("Index in range(%s-%s):", 1, numberOfTransactions + 1);
+            String prompt = String.format("Index in range(%s-%s):", 1, numberOfTransactions);
             indexOfSelectedTransaction = retrieveIndexOfTransaction(prompt) - 1;
         }
 
