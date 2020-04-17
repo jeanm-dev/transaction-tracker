@@ -66,7 +66,7 @@ public class DeleteInstruction implements Instruction {
 
     private void deleteTransaction(Transaction transaction) {
         try {
-            transactionRepository.removeTransaction(transaction);
+            transactionRepository.removeTransaction(transaction.getIdentifier());
         } catch (SQLException exception) {
             printStream.println("Unable to remove transaction!\nPlease try again!");
 //            exception.printStackTrace();

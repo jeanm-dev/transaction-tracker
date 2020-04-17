@@ -58,7 +58,7 @@ public class TestRepositoryApplication {
     private static void deleteTransactions(List<Transaction> transactions, TransactionRepository repository) {
         for (Transaction transaction : transactions) {
             try {
-                repository.removeTransaction(transaction);
+                repository.removeTransaction(transaction.getIdentifier());
             } catch (SQLException e) {
                 e.printStackTrace();
             }

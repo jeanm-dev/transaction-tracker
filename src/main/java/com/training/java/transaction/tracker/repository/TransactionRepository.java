@@ -9,7 +9,7 @@ public interface TransactionRepository {
 
     void addTransaction(Transaction transaction) throws SQLException;
 
-    void removeTransaction(Transaction transaction) throws SQLException;
+    void removeTransaction(int transactionId) throws SQLException;
 
     void updateTransaction(Transaction transaction) throws SQLException;
 

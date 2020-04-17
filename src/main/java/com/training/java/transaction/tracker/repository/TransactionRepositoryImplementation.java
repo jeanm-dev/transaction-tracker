@@ -52,11 +52,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public void removeTransaction(Transaction transaction) throws SQLException {
+    public void removeTransaction(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(DELETE_STATEMENT);
-        preparedStatement.setInt(1, transaction.getIdentifier());
+        preparedStatement.setInt(1, transactionId);
 
         preparedStatement.execute();
 
