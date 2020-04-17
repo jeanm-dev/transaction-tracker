@@ -48,7 +48,7 @@ public class DeleteInstruction implements Instruction {
 
         // Prompt are you sure Y/N?
         printTransactionLine(transaction);
-        commandLine.printWithNewLine("Are you sure you would like to update this transaction?");
+        commandLine.printWithNewLine("Are you sure you would like delete this transaction?");
         List<String> optionList = List.of("Y", "N");
         String selectedOption = retrieveMatchingInput(optionList);
 
