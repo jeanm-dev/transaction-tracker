@@ -44,16 +44,16 @@ public class Menu {
     private String createInstructionMessage(Map<String, Instruction> instructions) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(NEW_LINE);
-        builder.append("Enter one of the following commands to proceed:");
-        builder.append(NEW_LINE);
+        builder.append(NEW_LINE)
+                .append("Enter one of the following commands to proceed:")
+                .append(NEW_LINE);
 
         for (Instruction instruction : instructions.values()) {
             String message = instruction.getInstructionMenuDescription();
             if (message != null) {
-                builder.append(NEW_LINE);
-                builder.append(" # ");
-                builder.append(message);
+                builder.append(NEW_LINE)
+                        .append(" # ")
+                        .append(message);
             }
         }
 
@@ -76,8 +76,8 @@ public class Menu {
         StringBuilder builder = new StringBuilder();
         for (String inputCommand : instructions.keySet()) {
             if (instructions.get(inputCommand).getInstructionMenuDescription() != null) {
-                builder.append(inputCommand);
-                builder.append(",");
+                builder.append(inputCommand)
+                        .append(",");
             }
         }
 
@@ -87,17 +87,13 @@ public class Menu {
         return String.format("\n(%s): ", builder.toString());
     }
 
-    private Instruction determineNextOperation(String input) {
-        Instruction result = null;
-
-        for (String operationKey : instructions.keySet()) {
-            if (operationKey.equalsIgnoreCase(input)) {
-                result = instructions.get(operationKey);
-                break;
-            }
+    //TODO: Do java-doc
+    private Instruction determineNextOperation(String input) throws Exception {
+        if (instructions.containsKey(input)) {
+            return instructions.get(input);
+        } else {
+            throw new Exception("Invalid input!\nPlease try again!\n");
         }
-
-        return result;
     }
 
 
@@ -112,14 +108,14 @@ public class Menu {
         displayMenu();
 
         // Fetch input from input stream
-        String input = retrieveUserInput();
+        String input = retrieveUserInput().toUpperCase();
 
         // Match input with instruction
-        Instruction nextInstruction = determineNextOperation(input);
+        try {
+            determineNextOperation(input).perform();
+        } catch (Exception e) {
+            commandLine.printWithNewLine(e.getMessage());
+        }
 
-        // Check valid next instruction
-        nextInstruction = nextInstruction == null ? new InvalidInstruction(printStream) : nextInstruction;
-
-        nextInstruction.perform();
     }
 }
