@@ -35,16 +35,13 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     public void create(Transaction transaction) throws SQLException {
         Connection connection = database.getConnection();
 
-        //TODO: Fix time bug - Possibly related to timezone difference between DB and Local machine
         java.util.Date date = transaction.getDateOfTransaction();
-//        date.toInstant(); //TODO: Investigate instant as solution
-
         Date transactionDate = new Date(date.getTime());
 
         PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT);
         preparedStatement.setString(1, transaction.getDescription());
         preparedStatement.setBigDecimal(2, transaction.getAmount());
-        preparedStatement.setDate(3, transactionDate);
+        preparedStatement.setDate(3, transactionDate, java.util.Calendar.getInstance()); //Fix time bug
 
         preparedStatement.execute();
 
