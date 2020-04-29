@@ -3,11 +3,7 @@ package com.training.java.transaction.tracker.repository;
 import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.domainobject.Transaction;
 
-import java.sql.Date;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +20,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?;";
     private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
+    private static final String SELECT_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
 
     private Database database;
 
@@ -32,24 +29,32 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public void create(Transaction transaction) throws SQLException {
+    public Transaction create(Transaction transaction) throws SQLException {
         Connection connection = database.getConnection();
 
         java.util.Date date = transaction.getDateOfTransaction();
         Date transactionDate = new Date(date.getTime());
 
-        PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT);
+        PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, transaction.getDescription());
         preparedStatement.setBigDecimal(2, transaction.getAmount());
         preparedStatement.setDate(3, transactionDate, java.util.Calendar.getInstance()); //Fix time bug
 
         preparedStatement.execute();
 
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+        if (resultSet.next()) {
+            int transactionId = resultSet.getInt(1);
+            transaction.setIdentifier(transactionId);
+        }
+
         preparedStatement.close();
+
+        return transaction;
     }
 
     @Override
-    public void remove(int transactionId) throws SQLException {
+    public boolean remove(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(DELETE_STATEMENT);
@@ -57,7 +62,12 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
 
         preparedStatement.execute();
 
+        // Determine if changes where applied
+        int updateCount = preparedStatement.getUpdateCount();
+
         preparedStatement.close();
+
+        return updateCount > 0;
     }
 
     @Override
