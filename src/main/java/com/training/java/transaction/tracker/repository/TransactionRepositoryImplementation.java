@@ -109,6 +109,22 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         return transactions;
     }
 
+    @Override
+    public boolean doesIdExist(int transactionId) throws SQLException {
+        Connection connection = database.getConnection();
+
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT);
+        preparedStatement.setInt(0, transactionId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            return true;
+        }
+
+        return false;
+    }
+
     private Transaction mapToTransaction(ResultSet resultSet) throws SQLException {
         if (!resultSet.isClosed()) {
 

@@ -15,6 +15,7 @@ public interface TransactionRepository {
 
     List<Transaction> fetchAll() throws SQLException;
 
+    boolean doesIdExist(int transactionId) throws SQLException;
 
 
 }
