@@ -19,11 +19,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String AMOUNT_COLUMN = "amount";
     private static final String DATE_OF_TRANSACTION_COLUMN = "dateOfTransaction";
 
-    //TODO: Use Hardcoded strings instead - could be useful down the line to add generics
-    private static final String ADD_STATEMENT = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN);
-    private static final String DELETE_STATEMENT = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, TRANSACTION_ID_COLUMN);
-    private static final String UPDATE_STATEMENT = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?", TABLE_NAME, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TRANSACTION_ID_COLUMN);
-    private static final String SELECT_ALL_STATEMENT = String.format("SELECT %s, %s, %s, %s FROM %s", TRANSACTION_ID_COLUMN, DESCRIPTION_COLUMN, AMOUNT_COLUMN, DATE_OF_TRANSACTION_COLUMN, TABLE_NAME);
+    // Used Hardcoded strings instead - could be useful down the line to add generics with String.format() function
+    private static final String ADD_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + " , " + DATE_OF_TRANSACTION_COLUMN + ") VALUES (?, ?, ?)";
+    private static final String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?;";
+    private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
+    private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
 
     private Database database;
 
