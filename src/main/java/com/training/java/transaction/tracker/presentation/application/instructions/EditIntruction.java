@@ -79,7 +79,7 @@ public class EditIntruction implements Instruction {
     private Transaction fetchTransaction(int index) {
         Transaction transaction = null;
         try {
-            List<Transaction> transactions = transactionRepository.fetchAllTransactions();
+            List<Transaction> transactions = transactionRepository.fetchAll();
             transaction = transactions.get(index);
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
@@ -90,7 +90,7 @@ public class EditIntruction implements Instruction {
     private int fetchNumberOfTransactions() {
         int numberOfTransactions = -1;
         try {
-            numberOfTransactions = transactionRepository.fetchAllTransactions().size();
+            numberOfTransactions = transactionRepository.fetchAll().size();
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }
@@ -99,7 +99,7 @@ public class EditIntruction implements Instruction {
 
     private void updateTransaction(Transaction transaction) {
         try {
-            transactionRepository.updateTransaction(transaction);
+            transactionRepository.update(transaction);
         } catch (SQLException e) {
             commandLine.printWithNewLine("Unable to save updates!\nPlease try again later!");
 //            e.printStackTrace();

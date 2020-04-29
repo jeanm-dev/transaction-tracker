@@ -58,7 +58,7 @@ public class TestRepositoryApplication {
     private static void deleteTransactions(List<Transaction> transactions, TransactionRepository repository) {
         for (Transaction transaction : transactions) {
             try {
-                repository.removeTransaction(transaction.getIdentifier());
+                repository.remove(transaction.getIdentifier());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -69,7 +69,7 @@ public class TestRepositoryApplication {
         for (Transaction transaction : transactions) {
             transaction.setDescription("Prefixed ! - " + transaction.getDescription());
             try {
-                repository.updateTransaction(transaction);
+                repository.update(transaction);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -79,7 +79,7 @@ public class TestRepositoryApplication {
     private static List<Transaction> fetchAllTransactions(TransactionRepository repository) {
         List<Transaction> transactions = null;
         try {
-            transactions = repository.fetchAllTransactions();
+            transactions = repository.fetchAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,7 +102,7 @@ public class TestRepositoryApplication {
     private static void addTransactions(TransactionRepository repository, List<Transaction> transactions) {
         for (Transaction transaction : transactions) {
             try {
-                repository.addTransaction(transaction);
+                repository.create(transaction);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

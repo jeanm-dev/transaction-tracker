@@ -56,7 +56,7 @@ public class InputInstruction implements Instruction {
 
     private void storeTransaction(Transaction transaction) {
         try {
-            transactionRepository.addTransaction(transaction);
+            transactionRepository.create(transaction);
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to store transaction!");
             commandLine.printWithNewLine("Please try again!");

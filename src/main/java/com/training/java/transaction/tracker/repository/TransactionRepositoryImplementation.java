@@ -32,7 +32,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public void addTransaction(Transaction transaction) throws SQLException {
+    public void create(Transaction transaction) throws SQLException {
         Connection connection = database.getConnection();
 
         //TODO: Fix time bug - Possibly related to timezone difference between DB and Local machine
@@ -52,7 +52,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public void removeTransaction(int transactionId) throws SQLException {
+    public void remove(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(DELETE_STATEMENT);
@@ -64,7 +64,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public void updateTransaction(Transaction transaction) throws SQLException {
+    public void update(Transaction transaction) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STATEMENT);
@@ -82,7 +82,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public List<Transaction> fetchAllTransactions() throws SQLException {
+    public List<Transaction> fetchAll() throws SQLException {
         List<Transaction> transactions = null;
         Connection connection = database.getConnection();
 

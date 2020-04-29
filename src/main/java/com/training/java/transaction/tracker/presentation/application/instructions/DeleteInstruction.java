@@ -63,7 +63,7 @@ public class DeleteInstruction implements Instruction {
 
     private void deleteTransaction(Transaction transaction) {
         try {
-            transactionRepository.removeTransaction(transaction.getIdentifier());
+            transactionRepository.remove(transaction.getIdentifier());
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to remove transaction!\nPlease try again!");
 //            exception.printStackTrace();
@@ -73,7 +73,7 @@ public class DeleteInstruction implements Instruction {
     private Transaction fetchTransaction(int index) {
         Transaction transaction = null;
         try {
-            List<Transaction> transactions = transactionRepository.fetchAllTransactions();
+            List<Transaction> transactions = transactionRepository.fetchAll();
             transaction = transactions.get(index);
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
@@ -84,7 +84,7 @@ public class DeleteInstruction implements Instruction {
     private int fetchNumberOfTransactions() {
         int numberOfTransactions = -1;
         try {
-            numberOfTransactions = transactionRepository.fetchAllTransactions().size();
+            numberOfTransactions = transactionRepository.fetchAll().size();
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to fetch number of transactions from the database");
         }

@@ -7,11 +7,14 @@ import com.training.java.transaction.tracker.domainobject.Transaction;
 
 public interface TransactionRepository {
 
-    void addTransaction(Transaction transaction) throws SQLException;
+    void create(Transaction transaction) throws SQLException;
 
-    void removeTransaction(int transactionId) throws SQLException;
+    void remove(int transactionId) throws SQLException;
 
-    void updateTransaction(Transaction transaction) throws SQLException;
+    void update(Transaction transaction) throws SQLException;
 
-    List<Transaction> fetchAllTransactions() throws SQLException;
+    List<Transaction> fetchAll() throws SQLException;
+
+
+
 }

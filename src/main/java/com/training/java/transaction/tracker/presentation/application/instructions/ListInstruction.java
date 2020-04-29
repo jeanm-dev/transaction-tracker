@@ -28,7 +28,7 @@ public class ListInstruction implements Instruction {
     @Override
     public void perform() {
         try {
-            List<Transaction> transactions = transactionRepository.fetchAllTransactions();
+            List<Transaction> transactions = transactionRepository.fetchAll();
 
             if (transactions == null || transactions.isEmpty()) {
                 printNoTransactionsFoundMessage();
