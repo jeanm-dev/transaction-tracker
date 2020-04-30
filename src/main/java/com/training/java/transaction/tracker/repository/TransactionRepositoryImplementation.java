@@ -21,6 +21,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
     private static final String SELECT_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
+    private static final String SELECT_DESCRIPTION_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + DESCRIPTION_COLUMN + " LIKE ?;";
 
     private Database database;
 
@@ -98,7 +99,8 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
-            if (transactions == null) transactions = new ArrayList<>();
+            if (transactions == null)
+                transactions = new ArrayList<>();
 
             Transaction transaction = mapToTransaction(resultSet);
             transactions.add(transaction);
@@ -122,7 +124,54 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
             return true;
         }
 
+        preparedStatement.close();
+
         return false;
+    }
+
+    @Override
+    public Transaction fetchById(int transactionId) throws SQLException {
+        Connection connection = database.getConnection();
+
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT);
+        preparedStatement.setInt(0, transactionId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            return mapToTransaction(resultSet);
+        }
+
+        preparedStatement.close();
+
+        return null;
+    }
+
+    @Override
+    public List<Transaction> fetchByDescription(String description) throws SQLException {
+        List<Transaction> transactions = null;
+        Connection connection = database.getConnection();
+
+        String formattedDescription = "%" + description +"%";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_DESCRIPTION_STATEMENT);
+        preparedStatement.setString(1, formattedDescription);
+
+        System.out.println(preparedStatement.toString());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            if (transactions == null)
+                transactions = new ArrayList<>();
+
+            Transaction transaction = mapToTransaction(resultSet);
+            transactions.add(transaction);
+        }
+
+        preparedStatement.close();
+
+        return transactions;
     }
 
     private Transaction mapToTransaction(ResultSet resultSet) throws SQLException {
@@ -140,4 +189,3 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         return null;
     }
 }
-
