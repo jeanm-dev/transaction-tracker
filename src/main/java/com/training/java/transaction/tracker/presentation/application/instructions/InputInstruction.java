@@ -9,15 +9,19 @@ import com.training.java.transaction.tracker.repository.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+//TODO: Rename to Interactions
+//TODO: Abstract the type of input (Transaction or Account etc.)
 public class InputInstruction implements Instruction {
 
-    private CommandLine commandLine;
-    private InstructionDescription instructionDescription;
-    private TransactionRepository transactionRepository;
+    private final CommandLine commandLine;
+    private final InstructionDescription instructionDescription;
+    private final TransactionRepository transactionRepository;
 
     private List<String> inputFields;
 
@@ -44,18 +48,17 @@ public class InputInstruction implements Instruction {
         amount = retrieveAmount();
         dateOfTransaction = retrieveDateOfTransaction();
 
-        // Construct Transaction
-        transaction = new Transaction(description, amount, dateOfTransaction);
-
-        // DEBUG print transaction
-        printTransactionLine(transaction);
+        // DEBUG print transaction properties
+        printTransactionLine(description, amount, dateOfTransaction);
 
         // Store transaction
-        storeTransaction(transaction);
+        storeTransaction(description, amount, dateOfTransaction);
     }
 
-    private void storeTransaction(Transaction transaction) {
+    //Move to service
+    private void storeTransaction(String description, BigDecimal amount, Date dateOfTransaction) {
         try {
+            Transaction transaction = new Transaction(description, amount, dateOfTransaction);
             transactionRepository.create(transaction);
         } catch (SQLException exception) {
             commandLine.printWithNewLine("Unable to store transaction!");
@@ -114,14 +117,14 @@ public class InputInstruction implements Instruction {
         return instructionDescription.getMenuDescription();
     }
 
-    private void printTransactionLine(Transaction transaction) {
+    private void printTransactionLine(String description, BigDecimal amount, Date dateOfTransaction) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         Format dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        String formattedAmount = decimalFormat.format(transaction.getAmount());
-        String formattedDate = dateFormatter.format(transaction.getDateOfTransaction());
+        String formattedAmount = decimalFormat.format(amount);
+        String formattedDate = dateFormatter.format(dateOfTransaction);
 
-        String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
+        String transactionLine = String.format("%s \t %s \t %s", description, formattedAmount, formattedDate);
         commandLine.printWithNewLine(transactionLine);
     }
 }
