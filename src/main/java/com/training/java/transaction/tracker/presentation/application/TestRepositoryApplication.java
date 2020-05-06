@@ -53,6 +53,9 @@ public class TestRepositoryApplication {
         //Print all transactions
         transactionList = fetchAllTransactions(repository);
         printAllFetchedTransactions(transactionList);
+
+        //Tests repository method for checking if an entry is present in the database
+        testTransactionExists(repository);
     }
 
     private static void deleteTransactions(List<Transaction> transactions, TransactionRepository repository) {
@@ -124,5 +127,23 @@ public class TestRepositoryApplication {
         }
 
         return transactionList;
+    }
+
+    // Transaction exists test
+    private static void testTransactionExists(TransactionRepository transactionRepository) {
+        ;
+        try {
+            boolean b = transactionRepository.doesIdExist(100);
+            System.out.println("Transaction 100 exists? " + b);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            boolean b = transactionRepository.doesIdExist(1);
+            System.out.println("Transaction 1 exists? " + b);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

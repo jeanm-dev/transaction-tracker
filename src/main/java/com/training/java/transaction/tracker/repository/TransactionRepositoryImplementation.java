@@ -20,9 +20,9 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?;";
     private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
-    // TODO: Try writing the most specific SQL statements you can
-    // Optimise the traffic
-    private static final String SELECT_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
+    // Specific SQL Queries Optimise the traffic - Less data (columns) are transferred between the database and the application
+    private static final String SELECT_TRANSACTION_WITH_ID_EXISTS_STATEMENT = "SELECT 1 FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
+    private static final String SELECT_TRANSACTION_BY_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_DESCRIPTION_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + DESCRIPTION_COLUMN + " LIKE ?;";
 
     private Database database;
@@ -117,7 +117,8 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     public boolean doesIdExist(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT); // TODO: Make SQL Statement specific
+        PreparedStatement preparedStatement = connection.prepareStatement(
+            SELECT_TRANSACTION_WITH_ID_EXISTS_STATEMENT);
         preparedStatement.setInt(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -135,7 +136,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     public Transaction fetchById(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT);
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TRANSACTION_BY_ID_STATEMENT);
         preparedStatement.setInt(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
