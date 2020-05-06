@@ -118,7 +118,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT); // TODO: Make SQL Statement specific
-        preparedStatement.setInt(0, transactionId);
+        preparedStatement.setInt(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -136,7 +136,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT);
-        preparedStatement.setInt(0, transactionId);
+        preparedStatement.setInt(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
