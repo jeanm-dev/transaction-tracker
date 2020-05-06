@@ -20,6 +20,8 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?;";
     private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
+    // TODO: Try writing the most specific SQL statements you can
+    // Optimise the traffic
     private static final String SELECT_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
     private static final String SELECT_DESCRIPTION_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + DESCRIPTION_COLUMN + " LIKE ?;";
 
@@ -115,7 +117,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     public boolean doesIdExist(int transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT);
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ID_STATEMENT); // TODO: Make SQL Statement specific
         preparedStatement.setInt(0, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
