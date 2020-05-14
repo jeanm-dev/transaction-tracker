@@ -1,6 +1,6 @@
 package com.training.java.transaction.tracker.service;
 
-import com.training.java.transaction.tracker.domainobject.Transaction;
+import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
 import com.training.java.transaction.tracker.service.request.DeleteTransactionRequest;

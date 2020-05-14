@@ -1,6 +1,6 @@
 package com.training.java.transaction.tracker.service.response;
 
-import com.training.java.transaction.tracker.domainobject.Transaction;
+import com.training.java.transaction.tracker.dao.Transaction;
 
 public class FetchTransactionResponse extends BaseResponse {
 

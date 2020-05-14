@@ -1,6 +1,6 @@
 package com.training.java.transaction.tracker.repository;
 
-import com.training.java.transaction.tracker.domainobject.TransactionType;
+import com.training.java.transaction.tracker.dao.TransactionType;
 import java.sql.SQLException;
 import java.util.List;
 

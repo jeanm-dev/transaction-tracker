@@ -1,7 +1,7 @@
 package com.training.java.transaction.tracker.repository;
 
 import com.training.java.transaction.tracker.data.Database;
-import com.training.java.transaction.tracker.domainobject.Transaction;
+import com.training.java.transaction.tracker.dao.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;

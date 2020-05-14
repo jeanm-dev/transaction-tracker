@@ -1,4 +1,4 @@
-package com.training.java.transaction.tracker.domainobject;
+package com.training.java.transaction.tracker.dao;
 
 public final class TransactionType {
 

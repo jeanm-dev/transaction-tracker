@@ -1,4 +1,4 @@
-package com.training.java.transaction.tracker.domainobject;
+package com.training.java.transaction.tracker.dao;
 
 import java.math.BigDecimal;
 import java.util.Date;

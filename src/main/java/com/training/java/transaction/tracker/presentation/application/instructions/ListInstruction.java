@@ -1,6 +1,6 @@
 package com.training.java.transaction.tracker.presentation.application.instructions;
 
-import com.training.java.transaction.tracker.domainobject.Transaction;
+import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.ListInstructionDescription;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
