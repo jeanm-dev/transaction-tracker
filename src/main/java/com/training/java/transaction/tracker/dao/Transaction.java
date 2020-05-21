@@ -9,6 +9,7 @@ public class Transaction {
     private String description;
     private BigDecimal amount;
     private Date dateOfTransaction;
+    private Integer type; // Null? invalid value
 
     public Transaction() {
     }
@@ -52,4 +53,11 @@ public class Transaction {
         this.dateOfTransaction = dateOfTransaction;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }

@@ -58,7 +58,7 @@ public class ListInstruction implements Instruction {
     }
 
     private void printHeading() {
-        String headingLine = String.format("%s \t %s \t %s", "DESCRIPTION", "AMOUNT", "DATE OF TRANSACTION");
+        String headingLine = String.format("%s \t %s \t %s \t %s", "DESCRIPTION", "AMOUNT", "DATE OF TRANSACTION", "TYPE OF TRANSACTION");
         commandLine.printWithNewLine(headingLine);
     }
 
@@ -68,8 +68,9 @@ public class ListInstruction implements Instruction {
 
         String formattedAmount = decimalFormat.format(transaction.getAmount());
         String formattedDate =  dateFormatter.format(transaction.getDateOfTransaction());
+        int type = transaction.getType();
 
-        String transactionLine = String.format("%s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate);
+        String transactionLine = String.format("%s \t %s \t %s \t %d", transaction.getDescription(), formattedAmount, formattedDate, type);
         commandLine.printWithNewLine(transactionLine);
     }
 

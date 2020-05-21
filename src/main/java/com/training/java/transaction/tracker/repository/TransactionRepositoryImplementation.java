@@ -14,16 +14,17 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     private static final String DESCRIPTION_COLUMN = "description";
     private static final String AMOUNT_COLUMN = "amount";
     private static final String DATE_OF_TRANSACTION_COLUMN = "dateOfTransaction";
+    private static final String TRANSACTION_TYPE_COLUMN = "transactionTypeId";
 
     // Used Hardcoded strings instead - could be useful down the line to add generics with String.format() function
     private static final String ADD_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + " , " + DATE_OF_TRANSACTION_COLUMN + ") VALUES (?, ?, ?)";
     private static final String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?;";
     private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET " + DESCRIPTION_COLUMN + " = ?, " + AMOUNT_COLUMN + " = ?, " + DATE_OF_TRANSACTION_COLUMN + " = ? WHERE " + TRANSACTION_ID_COLUMN + " = ?";
-    private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME;
+    private static final String SELECT_ALL_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " , " + TRANSACTION_TYPE_COLUMN + " FROM " + TABLE_NAME;
     // Specific SQL Queries Optimise the traffic - Less data (columns) are transferred between the database and the application
     private static final String SELECT_TRANSACTION_WITH_ID_EXISTS_STATEMENT = "SELECT 1 FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
-    private static final String SELECT_TRANSACTION_BY_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
-    private static final String SELECT_DESCRIPTION_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " FROM " + TABLE_NAME + " WHERE " + DESCRIPTION_COLUMN + " LIKE ?;";
+    private static final String SELECT_TRANSACTION_BY_ID_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " , " + TRANSACTION_TYPE_COLUMN  + " FROM " + TABLE_NAME + " WHERE " + TRANSACTION_ID_COLUMN + " = ?";
+    private static final String SELECT_DESCRIPTION_STATEMENT = "SELECT " + TRANSACTION_ID_COLUMN + ", " + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + ", " + DATE_OF_TRANSACTION_COLUMN + " , " + TRANSACTION_TYPE_COLUMN + " FROM " + TABLE_NAME + " WHERE " + DESCRIPTION_COLUMN + " LIKE ?;";
 
     private Database database;
 
@@ -186,6 +187,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
             transaction.setDescription(resultSet.getString(DESCRIPTION_COLUMN));
             transaction.setDateOfTransaction(resultSet.getDate(DATE_OF_TRANSACTION_COLUMN));
             transaction.setIdentifier(resultSet.getInt(TRANSACTION_ID_COLUMN));
+            transaction.setType(resultSet.getInt(TRANSACTION_TYPE_COLUMN)); // Returns 0 if null
 
             return transaction;
         }
