@@ -2,6 +2,7 @@ package com.training.java.transaction.tracker.service;
 
 import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.service.dto.TransactionDto;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
 import com.training.java.transaction.tracker.service.request.DeleteTransactionRequest;
 import com.training.java.transaction.tracker.service.request.FetchTransactionRequest;
@@ -53,7 +54,7 @@ public class TransactionServiceImplementation implements TransactionService {
                     .stream()
                     .filter(transaction -> transaction.getIdentifier() == transactionId)
                     .findFirst()
-                    .map(transaction -> new FetchTransactionResponse(true, "Found transaction!", transaction))
+                    .map(transaction -> new FetchTransactionResponse(true, "Found transaction!", new TransactionDto(transaction, null)))
                     .orElse(new FetchTransactionResponse(false, "Id doesn't exist"));
         } catch (SQLException e) {
             return new FetchTransactionResponse(false, "Failed to fetch the transaction");

@@ -2,6 +2,7 @@ package com.training.java.transaction.tracker.service;
 
 import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.service.dto.TransactionDto;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
 import com.training.java.transaction.tracker.service.request.DeleteTransactionRequest;
 import com.training.java.transaction.tracker.service.request.FetchTransactionRequest;
@@ -100,10 +101,12 @@ class TransactionServiceImplementationTest {
         // Given
         int expectedTransactionId = 100;
 
-        Transaction expectedTransaction = newTransaction();
-        expectedTransaction.setIdentifier(expectedTransactionId);
+        Transaction stubbedTransaction = newTransaction();
+        stubbedTransaction.setIdentifier(expectedTransactionId);
 
-        when(mockRepository.fetchAll()).thenReturn(List.of(expectedTransaction));
+        TransactionDto expectedTransaction = new TransactionDto(stubbedTransaction, null);
+
+        when(mockRepository.fetchAll()).thenReturn(List.of(stubbedTransaction));
 
         // When
         FetchTransactionResponse response = serviceUnderTest.fetchTransaction(aFetchTransactionRequest(expectedTransactionId));
@@ -111,8 +114,15 @@ class TransactionServiceImplementationTest {
         // Then
         assertEquals(true, response.wasSuccessful());
         assertNotNull(response.getDescription());
-        assertEquals(expectedTransactionId, response.getTransaction().getIdentifier());
-        assertEquals(expectedTransaction, response.getTransaction());
+        assertNotNull(response.getTransaction());
+
+        TransactionDto resultTransaction = response.getTransaction();
+        assertEquals(expectedTransactionId, resultTransaction.getIdentifier());
+        assertEquals(expectedTransaction.getDescription(), resultTransaction.getDescription());
+        assertEquals(expectedTransaction.getAmount(), resultTransaction.getAmount());
+        assertEquals(expectedTransaction.getDateOfTransaction(), resultTransaction.getDateOfTransaction());
+        assertEquals(expectedTransaction.getType(), resultTransaction.getType());
+//        assertTrue(expectedTransaction.equals(response.getTransaction())); // TODO: Override equals method?
     }
 
 

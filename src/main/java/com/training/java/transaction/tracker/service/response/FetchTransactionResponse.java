@@ -1,22 +1,22 @@
 package com.training.java.transaction.tracker.service.response;
 
-import com.training.java.transaction.tracker.dao.Transaction;
+import com.training.java.transaction.tracker.service.dto.TransactionDto;
 
 public class FetchTransactionResponse extends BaseResponse {
 
-    private final Transaction transaction;
+    private final TransactionDto transaction;
 
     public FetchTransactionResponse(boolean successful, String description) {
         super(successful, description);
         transaction = null;
     }
 
-    public FetchTransactionResponse(boolean successful, String description, Transaction transaction) {
+    public FetchTransactionResponse(boolean successful, String description, TransactionDto transaction) {
         super(successful, description);
         this.transaction = transaction;
     }
 
-    public Transaction getTransaction() {
+    public TransactionDto getTransaction() {
         return transaction;
     }
 }
