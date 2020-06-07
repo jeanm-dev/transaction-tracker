@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.dao.TransactionType;
-import com.training.java.transaction.tracker.service.dto.TransactionDtoFactory;
 import com.training.java.transaction.tracker.service.dto.TransactionDto;
+import com.training.java.transaction.tracker.service.dto.TransactionDtoFactory;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;

@@ -12,9 +12,12 @@ import com.training.java.transaction.tracker.service.response.UpdateTransactionR
 // CRUD: operations
 public interface TransactionService {
 
-    CreateTransactionResponse createTransaction(CreateTransactionRequest createTransactionRequest);
-    FetchTransactionResponse fetchTransaction(FetchTransactionRequest fetchTransactionRequest);
-    UpdateTransactionResponse updateTransaction(UpdateTransactionRequest updateTransactionRequest);
-    DeleteTransactionResponse deleteTransaction(DeleteTransactionRequest deleteTransactionRequest);
+  CreateTransactionResponse createTransaction(CreateTransactionRequest createTransactionRequest);
+
+  FetchTransactionResponse fetchTransaction(FetchTransactionRequest fetchTransactionRequest);
+
+  UpdateTransactionResponse updateTransaction(UpdateTransactionRequest updateTransactionRequest);
+
+  DeleteTransactionResponse deleteTransaction(DeleteTransactionRequest deleteTransactionRequest);
 
 }
