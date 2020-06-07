@@ -1,8 +1,10 @@
 package com.training.java.transaction.tracker.service;
 
 import com.training.java.transaction.tracker.dao.Transaction;
+import com.training.java.transaction.tracker.dao.TransactionType;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
-import com.training.java.transaction.tracker.service.dto.TransactionDto;
+import com.training.java.transaction.tracker.repository.TransactionTypeRepository;
+import com.training.java.transaction.tracker.service.dto.TransactionDtoFactory;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
 import com.training.java.transaction.tracker.service.request.DeleteTransactionRequest;
 import com.training.java.transaction.tracker.service.request.FetchTransactionRequest;
@@ -15,20 +17,23 @@ import com.training.java.transaction.tracker.service.response.UpdateTransactionR
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 public class TransactionServiceImplementation implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final TransactionTypeRepository typeRepository;
 
-    public TransactionServiceImplementation(TransactionRepository transactionRepository) {
+    public TransactionServiceImplementation(TransactionRepository transactionRepository,
+        TransactionTypeRepository typeRepository) {
         this.transactionRepository = transactionRepository;
+        this.typeRepository = typeRepository;
     }
 
     @Override
     public CreateTransactionResponse createTransaction(CreateTransactionRequest createTransactionRequest) {
         Transaction insertedTransaction = null;
         try {
-            //TODO: Replace with Transaction DTO?
             //TODO: Add Validation of properties
             String description = createTransactionRequest.getDescription();
             BigDecimal amount = createTransactionRequest.getAmount();
@@ -48,14 +53,15 @@ public class TransactionServiceImplementation implements TransactionService {
         int transactionId = fetchTransactionRequest.getTransactionId();
 
         try {
-            // Example using streams
-            return transactionRepository
-                    .fetchAll()
-                    .stream()
-                    .filter(transaction -> transaction.getIdentifier() == transactionId)
-                    .findFirst()
-                    .map(transaction -> new FetchTransactionResponse(true, "Found transaction!", new TransactionDto(transaction, null)))
-                    .orElse(new FetchTransactionResponse(false, "Id doesn't exist"));
+            Transaction transaction = transactionRepository.fetchById(transactionId);
+            if (transaction != null) {
+                List<TransactionType> transactionTypes = typeRepository.fetchAll(); // Caching Layer? Service
+                return new FetchTransactionResponse(true, "Found transaction!", TransactionDtoFactory
+                    .make(transaction, transactionTypes));
+            } else {
+                return new FetchTransactionResponse(false, "Id doesn't exist");
+            }
+
         } catch (SQLException e) {
             return new FetchTransactionResponse(false, "Failed to fetch the transaction");
         }

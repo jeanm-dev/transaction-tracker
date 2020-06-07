@@ -1,7 +1,9 @@
 package com.training.java.transaction.tracker.service;
 
 import com.training.java.transaction.tracker.dao.Transaction;
+import com.training.java.transaction.tracker.dao.TransactionType;
 import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.TransactionTypeRepository;
 import com.training.java.transaction.tracker.service.dto.TransactionDto;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
 import com.training.java.transaction.tracker.service.request.DeleteTransactionRequest;
@@ -11,14 +13,15 @@ import com.training.java.transaction.tracker.service.response.CreateTransactionR
 import com.training.java.transaction.tracker.service.response.DeleteTransactionResponse;
 import com.training.java.transaction.tracker.service.response.FetchTransactionResponse;
 import com.training.java.transaction.tracker.service.response.UpdateTransactionResponse;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,12 +30,14 @@ import static org.mockito.Mockito.*;
 class TransactionServiceImplementationTest {
 
     private TransactionRepository mockRepository;
+    private TransactionTypeRepository mockTypeRepository;
     private TransactionService serviceUnderTest;
 
     @BeforeEach
     public void setup() {
         mockRepository = mock(TransactionRepository.class);
-        serviceUnderTest = new TransactionServiceImplementation(mockRepository);
+        mockTypeRepository = mock(TransactionTypeRepository.class);
+        serviceUnderTest = new TransactionServiceImplementation(mockRepository, mockTypeRepository);
     }
 
     @Test
@@ -40,7 +45,7 @@ class TransactionServiceImplementationTest {
         // Given
         when(mockRepository.create(any())).thenThrow(new SQLException("Failed to create transaction exception"));
 
-        serviceUnderTest = new TransactionServiceImplementation(mockRepository);
+        serviceUnderTest = new TransactionServiceImplementation(mockRepository, mockTypeRepository);
 
         // When
         CreateTransactionResponse response = serviceUnderTest.createTransaction(newCreateRequest());
@@ -82,7 +87,7 @@ class TransactionServiceImplementationTest {
     void fetchTransactionFailedWithExceptionThenReturnFailedResponse() throws SQLException {
         // Given
         SQLException sqlException = new SQLException("Unable to find id");
-        when(mockRepository.fetchAll()).thenThrow(sqlException);
+        when(mockRepository.fetchById(anyInt())).thenThrow(sqlException);
 
         // When
         FetchTransactionResponse response = serviceUnderTest.fetchTransaction(aFetchTransactionRequest(100));
@@ -97,16 +102,34 @@ class TransactionServiceImplementationTest {
     }
 
     @Test
-    void fetchTransactionSuccessfulThenReturnTransactionSuccessfulResponse() throws SQLException {
+    void fetchTransactionIsInvokedWithUnknownIdThneReturnFailedResponse() throws SQLException {
+        // Given
+        when(mockRepository.fetchById(anyInt())).thenReturn(null);
+
+        // When
+        FetchTransactionResponse response = serviceUnderTest.fetchTransaction(aFetchTransactionRequest(200));
+
+        // Then
+        assertEquals(false, response.wasSuccessful());
+        assertNotNull(response.getDescription());
+        assertNull(response.getTransaction());
+    }
+
+    @Test
+    void fetchTransactionSuccessfulWithMatchingTypeThenReturnTransactionWithExpectedTypeInSuccessfulResponse() throws SQLException {
         // Given
         int expectedTransactionId = 100;
+        int expectedTransactionType = 22;
+        String expectedType = "Matching Type";
 
         Transaction stubbedTransaction = newTransaction();
         stubbedTransaction.setIdentifier(expectedTransactionId);
+        stubbedTransaction.setType(expectedTransactionType);
 
-        TransactionDto expectedTransaction = new TransactionDto(stubbedTransaction, null);
+        TransactionType transactionType = new TransactionType(expectedTransactionType, expectedType);
 
-        when(mockRepository.fetchAll()).thenReturn(List.of(stubbedTransaction));
+        when(mockRepository.fetchById(anyInt())).thenReturn(stubbedTransaction);
+        when(mockTypeRepository.fetchAll()).thenReturn(List.of(transactionType));
 
         // When
         FetchTransactionResponse response = serviceUnderTest.fetchTransaction(aFetchTransactionRequest(expectedTransactionId));
@@ -116,13 +139,43 @@ class TransactionServiceImplementationTest {
         assertNotNull(response.getDescription());
         assertNotNull(response.getTransaction());
 
+        // MARK: Value Mappings
         TransactionDto resultTransaction = response.getTransaction();
+        assertNotNull(resultTransaction);
         assertEquals(expectedTransactionId, resultTransaction.getIdentifier());
-        assertEquals(expectedTransaction.getDescription(), resultTransaction.getDescription());
-        assertEquals(expectedTransaction.getAmount(), resultTransaction.getAmount());
-        assertEquals(expectedTransaction.getDateOfTransaction(), resultTransaction.getDateOfTransaction());
-        assertEquals(expectedTransaction.getType(), resultTransaction.getType());
-//        assertTrue(expectedTransaction.equals(response.getTransaction())); // TODO: Override equals method?
+        assertEquals(stubbedTransaction.getDescription(), resultTransaction.getDescription());
+        assertEquals(stubbedTransaction.getAmount(), resultTransaction.getAmount());
+        assertEquals(stubbedTransaction.getDateOfTransaction(), resultTransaction.getDateOfTransaction());
+        assertEquals(expectedType, resultTransaction.getType());
+    }
+
+    @Test
+    void fetchTransactionSuccessfulUnmatchedTypeThenReturnTransactionWithUndefinedTypeInSuccessfulResponse() throws SQLException {
+        // Given
+        int expectedTransactionId = 100;
+        String expectedType = TransactionDto.UNDEFINED;
+
+        Transaction stubbedTransaction = newTransaction();
+        stubbedTransaction.setIdentifier(expectedTransactionId);
+
+        when(mockRepository.fetchById(anyInt())).thenReturn(stubbedTransaction);
+
+        // When
+        FetchTransactionResponse response = serviceUnderTest.fetchTransaction(aFetchTransactionRequest(expectedTransactionId));
+
+        // Then
+        assertEquals(true, response.wasSuccessful());
+        assertNotNull(response.getDescription());
+        assertNotNull(response.getTransaction());
+
+        // MARK: Value Mappings
+        TransactionDto resultTransaction = response.getTransaction();
+        assertNotNull(resultTransaction);
+        assertEquals(expectedTransactionId, resultTransaction.getIdentifier());
+        assertEquals(stubbedTransaction.getDescription(), resultTransaction.getDescription());
+        assertEquals(stubbedTransaction.getAmount(), resultTransaction.getAmount());
+        assertEquals(stubbedTransaction.getDateOfTransaction(), resultTransaction.getDateOfTransaction());
+        assertEquals(resultTransaction.getType(), expectedType);
     }
 
 

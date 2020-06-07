@@ -1,6 +1,5 @@
 package com.training.java.transaction.tracker.service.dto;
 
-import com.training.java.transaction.tracker.dao.Transaction;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,6 +11,9 @@ public class TransactionDto {
   private final Date dateOfTransaction;
   private final String type;
 
+  public static final String UNDEFINED = "TYPE UNDEFINED";
+
+  // Useful for JSON mapping
   public TransactionDto(int identifier, String description, BigDecimal amount,
       Date dateOfTransaction, String type) {
     this.identifier = identifier;
@@ -21,12 +23,13 @@ public class TransactionDto {
     this.type = type;
   }
 
-  public TransactionDto(Transaction transaction, String type) {
-    this.identifier = transaction.getIdentifier();
-    this.description = transaction.getDescription();
-    this.amount = transaction.getAmount();
-    this.dateOfTransaction = transaction.getDateOfTransaction();
-    this.type = type;
+  public TransactionDto(int identifier, String description, BigDecimal amount,
+      Date dateOfTransaction) {
+    this.identifier = identifier;
+    this.description = description;
+    this.amount = amount;
+    this.dateOfTransaction = dateOfTransaction;
+    this.type = UNDEFINED;
   }
 
   public int getIdentifier() {
