@@ -108,7 +108,7 @@ class TransactionServiceImplementationTest {
   }
 
   @Test
-  void fetchTransactionIsInvokedWithUnknownIdThneReturnFailedResponse() throws SQLException {
+  void fetchTransactionIsInvokedWithUnknownIdThenReturnFailedResponse() throws SQLException {
     // Given
     when(mockRepository.fetchById(anyInt())).thenReturn(null);
 
@@ -170,6 +170,7 @@ class TransactionServiceImplementationTest {
     stubbedTransaction.setIdentifier(expectedTransactionId);
 
     when(mockRepository.fetchById(anyInt())).thenReturn(stubbedTransaction);
+    when(mockTypeRepository.fetchAll()).thenReturn(null);
 
     // When
     FetchTransactionResponse response = serviceUnderTest
