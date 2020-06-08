@@ -8,20 +8,18 @@ public class TransactionDtoFactory {
 
   public static TransactionDto make(Transaction transaction,
       List<TransactionType> transactionTypes) {
-    if (transaction.getType() != null && !transactionTypes.isEmpty()) {
-      return new TransactionDto(transaction.getIdentifier(), transaction.getDescription(),
-          transaction.getAmount(), transaction.getDateOfTransaction(),
-          transactionTypes // TODO: Discuss Overkill? Probably also is
-              .stream()
-              .filter(type -> type.getIdentifier() == transaction.getType())
-              .findFirst()
-              .map(type -> type.getDescription())
-              .orElse(TransactionDto.UNDEFINED) //NEVER Hit during tests
-      );
-    } else {
-      return new TransactionDto(transaction.getIdentifier(), transaction.getDescription(),
-          transaction.getAmount(), transaction.getDateOfTransaction());
-    }
 
+    String transactionType =
+        transaction.getType() == null ? TransactionDto.UNDEFINED : transactionTypes
+            .stream()
+            .filter(type -> type.getIdentifier() == transaction.getType())
+            .findFirst()
+            .map(type -> type.getDescription())
+            .orElse(TransactionDto.UNDEFINED);
+
+    return new TransactionDto(transaction.getIdentifier(), transaction.getDescription(),
+        transaction.getAmount(), transaction.getDateOfTransaction(),
+        transactionType
+    );
   }
 }
