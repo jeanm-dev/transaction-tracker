@@ -10,11 +10,11 @@ import java.util.List;
 public class TransactionRepositoryImplementation implements TransactionRepository {
 
     private static final String TABLE_NAME = "TransactionEntries";
-    private static final String TRANSACTION_ID_COLUMN = "transactionId";
-    private static final String DESCRIPTION_COLUMN = "description";
-    private static final String AMOUNT_COLUMN = "amount";
-    private static final String DATE_OF_TRANSACTION_COLUMN = "dateOfTransaction";
-    private static final String TRANSACTION_TYPE_COLUMN = "transactionTypeId";
+    private static final String TRANSACTION_ID_COLUMN = "TRANSACTION_ID";
+    private static final String DESCRIPTION_COLUMN = "DESCRIPTION";
+    private static final String AMOUNT_COLUMN = "AMOUNT";
+    private static final String DATE_OF_TRANSACTION_COLUMN = "DATE_OF_TRANSACTION";
+    private static final String TRANSACTION_TYPE_COLUMN = "TRANSACTION_TYPE_ID";
 
     // Used Hardcoded strings instead - could be useful down the line to add generics with String.format() function
     private static final String ADD_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + DESCRIPTION_COLUMN + ", " + AMOUNT_COLUMN + " , " + DATE_OF_TRANSACTION_COLUMN + ") VALUES (?, ?, ?)";

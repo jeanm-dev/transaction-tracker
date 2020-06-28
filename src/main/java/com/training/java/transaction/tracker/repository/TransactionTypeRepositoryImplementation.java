@@ -13,8 +13,8 @@ import java.util.List;
 public class TransactionTypeRepositoryImplementation implements TransactionTypeRepository {
 
   private static final String TABLE_NAME = "TransactionTypes";
-  private static final String TYPE_ID_COLUMN = "typeId";
-  private static final String DESCRIPTION_COLUMN = "description";
+  private static final String TYPE_ID_COLUMN = "TYPE_ID";
+  private static final String DESCRIPTION_COLUMN = "DESCRIPTION";
 
   private static final String INSERT_TRANSACTION_TYPE_STATEMENT =
       "INSERT INTO " + TABLE_NAME + "(" + DESCRIPTION_COLUMN + ") VALUES (?);";
