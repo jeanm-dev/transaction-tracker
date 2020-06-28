@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -237,7 +238,7 @@ class TransactionServiceImplementationTest {
 
     when(mockRepository.doesIdExist(anyInt())).thenReturn(true);
     doThrow(new SQLException("Unable to connect to database!")).when(mockRepository)
-        .remove(anyInt());
+        .remove(anyLong());
 
     // When
     DeleteTransactionResponse response = serviceUnderTest

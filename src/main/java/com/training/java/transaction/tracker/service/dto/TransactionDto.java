@@ -6,7 +6,7 @@ import java.util.Date;
 public class TransactionDto {
 
   // TODO: Decide DTO with special values or individual DTOs (identifier leads not required for create transaction objects)
-  private final int identifier;
+  private final long identifier;
   private final String description;
   private final BigDecimal amount;
   private final Date dateOfTransaction;
@@ -16,7 +16,7 @@ public class TransactionDto {
   public static final int NEW_IDENTIFIER = -1;
 
   // Useful for JSON mapping
-  public TransactionDto(int identifier, String description, BigDecimal amount,
+  public TransactionDto(long identifier, String description, BigDecimal amount,
       Date dateOfTransaction, String type) {
     //TODO: Deal with Null values
     this.identifier = identifier;
@@ -26,7 +26,7 @@ public class TransactionDto {
     this.type = type == null ? UNDEFINED : type;
   }
 
-  public int getIdentifier() {
+  public long getIdentifier() {
     return identifier;
   }
 

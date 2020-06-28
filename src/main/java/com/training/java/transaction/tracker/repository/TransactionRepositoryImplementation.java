@@ -58,11 +58,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public boolean remove(int transactionId) throws SQLException {
+    public boolean remove(long transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(DELETE_STATEMENT);
-        preparedStatement.setInt(1, transactionId);
+        preparedStatement.setLong(1, transactionId);
 
         preparedStatement.execute();
 
@@ -85,7 +85,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
         preparedStatement.setBigDecimal(2, transaction.getAmount());
         preparedStatement.setDate(3, transactionDate);
 
-        preparedStatement.setInt(4, transaction.getIdentifier());
+        preparedStatement.setLong(4, transaction.getIdentifier());
 
         preparedStatement.execute();
 

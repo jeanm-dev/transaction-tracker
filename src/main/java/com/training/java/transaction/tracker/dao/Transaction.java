@@ -5,59 +5,59 @@ import java.util.Date;
 
 public class Transaction {
 
-    private int identifier;
-    private String description;
-    private BigDecimal amount;
-    private Date dateOfTransaction;
-    private Integer type; // Null? invalid value
+  private long identifier;
+  private String description;
+  private BigDecimal amount;
+  private Date dateOfTransaction;
+  private Integer type; // Null? invalid value
 
-    public Transaction() {
-    }
+  public Transaction() {
+  }
 
-    public Transaction(String description, BigDecimal amount, Date dateOfTransaction) {
-        this.description = description;
-        this.amount = amount;
-        this.dateOfTransaction = dateOfTransaction;
-    }
+  public Transaction(String description, BigDecimal amount, Date dateOfTransaction) {
+    this.description = description;
+    this.amount = amount;
+    this.dateOfTransaction = dateOfTransaction;
+  }
 
-    public int getIdentifier() {
-        return identifier;
-    }
+  public long getIdentifier() {
+    return identifier;
+  }
 
-    public void setIdentifier(int identifier) {
-        this.identifier = identifier;
-    }
+  public void setIdentifier(long identifier) {
+    this.identifier = identifier;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+  public BigDecimal getAmount() {
+    return amount;
+  }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
+  }
 
 
-    public Date getDateOfTransaction() {
-        return dateOfTransaction;
-    }
+  public Date getDateOfTransaction() {
+    return dateOfTransaction;
+  }
 
-    public void setDateOfTransaction(Date dateOfTransaction) {
-        this.dateOfTransaction = dateOfTransaction;
-    }
+  public void setDateOfTransaction(Date dateOfTransaction) {
+    this.dateOfTransaction = dateOfTransaction;
+  }
 
-    public Integer getType() {
-        return type;
-    }
+  public Integer getType() {
+    return type;
+  }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
+  public void setType(Integer type) {
+    this.type = type;
+  }
 }
