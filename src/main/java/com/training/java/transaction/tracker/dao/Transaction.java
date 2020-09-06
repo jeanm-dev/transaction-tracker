@@ -3,6 +3,8 @@ package com.training.java.transaction.tracker.dao;
 import com.training.java.transaction.tracker.repository.TableDescriptor;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
 
 public class Transaction implements TableDescriptor.TableRow {
 
@@ -64,7 +66,11 @@ public class Transaction implements TableDescriptor.TableRow {
     this.type = type;
   }
 
-  //TODO: Consider returning a list of extractors mapping
+  @Override
+  public List<Object> getColumnValues() {
+    return List.of(description, amount, dateOfTransaction, type);
+  }
+
   @Override
   public <T> T getValueForColumn(String columnName) {
     switch (columnName) {
