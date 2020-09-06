@@ -1,9 +1,10 @@
 package com.training.java.transaction.tracker.dao;
 
+import com.training.java.transaction.tracker.repository.TableDescriptor;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Transaction {
+public class Transaction implements TableDescriptor.TableRow {
 
   private long identifier;
   private String description;
@@ -20,10 +21,12 @@ public class Transaction {
     this.dateOfTransaction = dateOfTransaction;
   }
 
+  @Override
   public long getIdentifier() {
     return identifier;
   }
 
+  @Override
   public void setIdentifier(long identifier) {
     this.identifier = identifier;
   }
@@ -59,5 +62,24 @@ public class Transaction {
 
   public void setType(Integer type) {
     this.type = type;
+  }
+
+  //TODO: Consider returning a list of extractors mapping
+  @Override
+  public <T> T getValueForColumn(String columnName) {
+    switch (columnName) {
+      //TODO: Map Identifier Investigate
+      case "DESCRIPTION":
+        return (T) description;
+      case "AMOUNT":
+        return (T) amount;
+      case "DATE_OF_TRANSACTION":
+        return (T) dateOfTransaction;
+      case "TRANSACTION_TYPE_ID":
+        return (T) type;
+      default:
+        // Should only use during
+        throw new IllegalArgumentException("Invalid columnName: " + columnName);
+    }
   }
 }
