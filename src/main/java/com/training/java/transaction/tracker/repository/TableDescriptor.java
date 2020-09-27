@@ -1,20 +1,13 @@
 package com.training.java.transaction.tracker.repository;
 
+import com.training.java.transaction.tracker.dao.Transaction;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public interface TableDescriptor<R extends TableDescriptor.TableRow> {
+public interface TableDescriptor<T> {
 
-  interface TableRow {
-
-    long getIdentifier();
-
-    void setIdentifier(long identifier);
-
-    List<Object> getColumnValues(); // TODO: Investigate alternative - Lambdas
-
-    <T> T getValueForColumn(String columnName);
-  }
 
   String getTableName();
 
@@ -24,7 +17,8 @@ public interface TableDescriptor<R extends TableDescriptor.TableRow> {
 
   List<Class<?>> getColumnTypes();
 
+  Function<T, Long> getIdentifierExtractor();
+  BiConsumer<Long, T> getIdentifierSetter();
 
-
-  List<Function<R, Object>> getValueExtractors();
+  Map<String, Function<T, Object>> getColumnValueMappers();
 }

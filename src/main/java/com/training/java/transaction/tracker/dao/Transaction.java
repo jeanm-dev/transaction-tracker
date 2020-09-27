@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
-public class Transaction implements TableDescriptor.TableRow {
+public class Transaction {
 
   private long identifier;
   private String description;
@@ -23,12 +23,10 @@ public class Transaction implements TableDescriptor.TableRow {
     this.dateOfTransaction = dateOfTransaction;
   }
 
-  @Override
   public long getIdentifier() {
     return identifier;
   }
 
-  @Override
   public void setIdentifier(long identifier) {
     this.identifier = identifier;
   }
@@ -66,26 +64,4 @@ public class Transaction implements TableDescriptor.TableRow {
     this.type = type;
   }
 
-  @Override
-  public List<Object> getColumnValues() {
-    return List.of(description, amount, dateOfTransaction, type);
-  }
-
-  @Override
-  public <T> T getValueForColumn(String columnName) {
-    switch (columnName) {
-      //TODO: Map Identifier Investigate
-      case "DESCRIPTION":
-        return (T) description;
-      case "AMOUNT":
-        return (T) amount;
-      case "DATE_OF_TRANSACTION":
-        return (T) dateOfTransaction;
-      case "TRANSACTION_TYPE_ID":
-        return (T) type;
-      default:
-        // Should only use during
-        throw new IllegalArgumentException("Invalid columnName: " + columnName);
-    }
-  }
 }

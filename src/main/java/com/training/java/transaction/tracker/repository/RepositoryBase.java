@@ -7,8 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class RepositoryBase<T extends TableDescriptor.TableRow, D extends TableDescriptor<T>> implements Repository<T> {
+//public class RepositoryBase<T extends TableDescriptor.TableRow<V>, D extends TableDescriptor<T, V>, V> implements
+public class RepositoryBase<T, D extends TableDescriptor<T>> implements Repository<T> {
 
   private final Database database;
   private final D tableDescriptor;
@@ -21,24 +23,41 @@ public class RepositoryBase<T extends TableDescriptor.TableRow, D extends TableD
   }
 
   //TODO: Construct these using table descriptor
-//  getWhereClause();
-//  getInsertStatement();
+  //  getWhereClause();
+
+
+  private String getInsertStatement() {
+    String columnNames = String.join(",", tableDescriptor.getColumnNames());
+    String values = tableDescriptor.getColumnNames().stream().map( l -> "?").collect(Collectors.joining(","));
+
+    return ADD_STATEMENT
+        .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{ALL_COLUMNS}", columnNames)
+        .replace("{VALUES_STRING}", values);
+  }
 
 
   @Override
-  public T create(T object) throws SQLException {
+  public T create(T object) throws Exception {
     Connection connection = database.getConnection();
 
-    //TODO: Replace ADD_STATEMENT with constructed prepare statement using TableDescriptor and TableRow
-    PreparedStatement preparedStatement = connection.prepareStatement(ADD_STATEMENT, Statement.RETURN_GENERATED_KEYS);
-    // TODO: Set parameters using TableDescriptor
-//    preparedStatement.setObject();
+    PreparedStatement preparedStatement = connection
+        .prepareStatement(getInsertStatement(), Statement.RETURN_GENERATED_KEYS);
+
+    for (int i = 0; i < tableDescriptor.getColumnNames().size(); i++) {
+      Object insertObject = tableDescriptor.getColumnValueMappers().get(tableDescriptor.getColumnNames().get(i)).apply(object);
+      if (insertObject != null) {
+        preparedStatement.setObject(i + 1, insertObject);
+      } else {
+        throw new MissingFieldValueException(tableDescriptor.getColumnNames().get(i));
+      }
+    }
     preparedStatement.execute();
 
     ResultSet resultSet = preparedStatement.getGeneratedKeys();
     if (resultSet.next()) {
-      int identifier = resultSet.getInt(1);
-      object.setIdentifier(identifier);
+      long identifier = resultSet.getLong(1);
+      tableDescriptor.getIdentifierSetter().accept(identifier,object);
     }
 
     preparedStatement.close();
@@ -69,5 +88,14 @@ public class RepositoryBase<T extends TableDescriptor.TableRow, D extends TableD
   @Override
   public T fetchById(int id) throws SQLException {
     return null;
+  }
+
+  @Override
+  public boolean isValid(T object) {
+    boolean validResult = true;
+    for(String columnName: tableDescriptor.getColumnNames()) {
+      validResult = tableDescriptor.getColumnValueMappers().get(columnName).apply(object) != null;
+    }
+    return validResult;
   }
 }
