@@ -28,7 +28,8 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   private String getInsertStatement() {
     String columnNames = String.join(",", tableDescriptor.getColumnNames());
-    String values = tableDescriptor.getColumnNames().stream().map( l -> "?").collect(Collectors.joining(","));
+    String values = tableDescriptor.getColumnNames().stream().map(l -> "?")
+        .collect(Collectors.joining(","));
 
     return ADD_STATEMENT
         .replace("{TABLE_NAME}", tableDescriptor.getTableName())
@@ -45,11 +46,15 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
         .prepareStatement(getInsertStatement(), Statement.RETURN_GENERATED_KEYS);
 
     for (int i = 0; i < tableDescriptor.getColumnNames().size(); i++) {
-      Object insertObject = tableDescriptor.getColumnValueMappers().get(tableDescriptor.getColumnNames().get(i)).apply(object);
+      String columnName = tableDescriptor.getColumnNames().get(i);
+
+      Object insertObject = tableDescriptor.getColumnValueMappers().get(columnName).apply(object);
       if (insertObject != null) {
         preparedStatement.setObject(i + 1, insertObject);
+      } else if (tableDescriptor.getRequiredColumnNames().get(columnName)) {
+        throw new MissingFieldValueException(columnName);
       } else {
-        throw new MissingFieldValueException(tableDescriptor.getColumnNames().get(i));
+        preparedStatement.setObject(i + 1, null);
       }
     }
     preparedStatement.execute();
@@ -57,7 +62,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
     ResultSet resultSet = preparedStatement.getGeneratedKeys();
     if (resultSet.next()) {
       long identifier = resultSet.getLong(1);
-      tableDescriptor.getIdentifierSetter().accept(identifier,object);
+      tableDescriptor.getIdentifierSetter().accept(identifier, object);
     }
 
     preparedStatement.close();
@@ -92,7 +97,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public boolean isValid(T object) {
-    for(String columnName: tableDescriptor.getRequiredColumnNames()) {
+    for (String columnName : tableDescriptor.getRequiredColumnNames().keySet()) {
       if (tableDescriptor.getColumnValueMappers().get(columnName).apply(object) == null) {
         return false;
       }

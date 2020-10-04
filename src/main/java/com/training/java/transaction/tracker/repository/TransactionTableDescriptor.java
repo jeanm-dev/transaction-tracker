@@ -31,8 +31,8 @@ public class TransactionTableDescriptor implements
   }
 
   @Override
-  public List<String> getRequiredColumnNames() {
-    return columnDescriptors.stream().map(ColumnDescriptor::getName).collect(Collectors.toList());
+  public Map<String, Boolean> getRequiredColumnNames() {
+    return columnDescriptors.stream().collect(Collectors.toMap(ColumnDescriptor::getName, ColumnDescriptor::getRequired));
   }
 
   @Override

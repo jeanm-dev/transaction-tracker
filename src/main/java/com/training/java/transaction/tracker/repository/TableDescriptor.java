@@ -14,7 +14,7 @@ public interface TableDescriptor<T> {
   String getIdentifierColumnName();
 
   List<String> getColumnNames();
-  List<String> getRequiredColumnNames();
+  Map<String, Boolean> getRequiredColumnNames();
 
   List<Class<?>> getColumnTypes();
 
