@@ -9,22 +9,18 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//public class RepositoryBase<T extends TableDescriptor.TableRow<V>, D extends TableDescriptor<T, V>, V> implements
 public class RepositoryBase<T, D extends TableDescriptor<T>> implements Repository<T> {
 
   private final Database database;
   private final D tableDescriptor;
 
-  private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING})";
+  private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING});";
+  private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = {ID_VALUE};";
 
   public RepositoryBase(Database database, D tableDescriptor) {
     this.database = database;
     this.tableDescriptor = tableDescriptor;
   }
-
-  //TODO: Construct these using table descriptor
-  //  getWhereClause();
-
 
   private String getInsertStatement() {
     String columnNames = String.join(",", tableDescriptor.getColumnNames());
@@ -37,6 +33,15 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
         .replace("{VALUES_STRING}", values);
   }
 
+  private String getWhereClause() {
+    String columnNames = String.join(",", tableDescriptor.getColumnNames());
+
+    return SELECT_WHERE_STATEMENT
+        .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{ALL_COLUMNS}", columnNames)
+        .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName())
+        .replace("{ID_VALUE}", "?");
+  }
 
   @Override
   public T create(T object) throws Exception {
@@ -71,7 +76,31 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   }
 
   @Override
-  public boolean remove(int id) throws SQLException {
+  public boolean doesIdExist(long id) throws SQLException {
+    Connection connection = database.getConnection();
+
+    PreparedStatement preparedStatement = connection.prepareStatement(getWhereClause());
+    preparedStatement.setLong(1, id);
+
+    System.out.println(preparedStatement);
+    ResultSet resultSet = preparedStatement.executeQuery();
+
+    while (resultSet.next()) {
+      return true;
+    }
+
+    preparedStatement.close();
+
+    return false;
+  }
+
+  @Override
+  public T fetchById(long id) throws SQLException {
+    return null;
+  }
+
+  @Override
+  public boolean remove(long id) throws SQLException {
     return false;
   }
 
@@ -82,16 +111,6 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public List<T> fetchAll() throws SQLException {
-    return null;
-  }
-
-  @Override
-  public boolean doesIdExist(int id) throws SQLException {
-    return false;
-  }
-
-  @Override
-  public T fetchById(int id) throws SQLException {
     return null;
   }
 
