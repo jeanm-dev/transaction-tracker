@@ -15,7 +15,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   private final D tableDescriptor;
 
   private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING});";
-  private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = {ID_VALUE};";
+  private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
   private static final String DELETE_STATEMENT = "DELETE FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
 
   public RepositoryBase(Database database, D tableDescriptor) {
@@ -40,8 +40,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
     return SELECT_WHERE_STATEMENT
         .replace("{TABLE_NAME}", tableDescriptor.getTableName())
         .replace("{ALL_COLUMNS}", columnNames)
-        .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName())
-        .replace("{ID_VALUE}", "?");
+        .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName());
   }
 
   private String getDeleteStatement() {
@@ -74,7 +73,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
     ResultSet resultSet = preparedStatement.getGeneratedKeys();
     if (resultSet.next()) {
       long identifier = resultSet.getLong(1);
-      tableDescriptor.getIdentifierSetter().accept(identifier, object);
+      tableDescriptor.getIdentifierSetter().accept(object, identifier);
     }
 
     preparedStatement.close();
@@ -103,6 +102,44 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public T fetchById(long id) throws SQLException {
+    Connection connection = database.getConnection();
+
+    PreparedStatement preparedStatement = connection.prepareStatement(getWhereClause());
+    preparedStatement.setLong(1, id);
+
+    System.out.println(preparedStatement);
+    ResultSet resultSet = preparedStatement.executeQuery();
+
+    if (resultSet.next()) {
+      T newObject = tableDescriptor.newObject();
+      // Setup identifier
+      long identifier = resultSet.getLong(1);
+      tableDescriptor.getIdentifierSetter().accept(newObject, identifier);
+
+      //TODO: Fix this
+      // Setup other properties
+//      for (String columnName : tableDescriptor.getColumnNames()) {
+//        int columnIndex = resultSet.findColumn(columnName);
+//        tableDescriptor.getColumnSetters().get(columnName)
+//            .accept(newObject,
+//                resultSet.getObject(columnIndex, tableDescriptor.getColumnTypes().get(columnName)));
+//      }
+
+      //TODO: Ask about this casting here - Alternative
+//      // Setup other properties
+//      for(String columnName: tableDescriptor.getColumnNames()) {
+//        int columnIndex = resultSet.findColumn(columnName);
+//        Object columnValue = resultSet.getObject(columnIndex);
+//        if (columnValue != null) {
+//          Class<?> columnType = tableDescriptor.getColumnTypes().get(columnName);
+//          tableDescriptor.getColumnSetters().get(columnName).accept(newObject, columnType.cast(columnValue));
+//        }
+//      }
+
+      return newObject;
+    }
+
+    preparedStatement.close();
     return null;
   }
 

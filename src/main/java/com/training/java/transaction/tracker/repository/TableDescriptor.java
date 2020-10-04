@@ -14,12 +14,19 @@ public interface TableDescriptor<T> {
   String getIdentifierColumnName();
 
   List<String> getColumnNames();
+
   Map<String, Boolean> getRequiredColumnNames();
 
-  List<Class<?>> getColumnTypes();
+  Map<String, Class<?>> getColumnTypes();
 
   Function<T, Long> getIdentifierExtractor();
-  BiConsumer<Long, T> getIdentifierSetter();
+
+  BiConsumer<T, Long> getIdentifierSetter();
 
   Map<String, Function<T, ?>> getColumnValueMappers();
+
+  T newObject();
+
+  public Map<String, BiConsumer<Transaction, ?>> getColumnSetters();
+//  Map<String, BiConsumer<T, Object>> getColumnSetters(); // TODO: Alternative - Maybe too generic?
 }
