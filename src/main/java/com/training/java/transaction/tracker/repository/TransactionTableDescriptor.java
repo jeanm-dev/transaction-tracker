@@ -7,20 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TransactionTableDescriptor implements
     TableDescriptor<Transaction> {
 
-  private final List<String> columnNames = List
-      .of("DESCRIPTION", "AMOUNT", "DATE_OF_TRANSACTION", "TRANSACTION_TYPE_ID");
-  private final List<Function<Transaction, Object>> valueExtractors = List
-      .of(Transaction::getDescription, Transaction::getAmount, Transaction::getDateOfTransaction,
-          Transaction::getType);
-
-  private final Map<String, Function<Transaction, Object>> columnValueMappers = Map
-      .of("DESCRIPTION", Transaction::getDescription, "AMOUNT", Transaction::getAmount,
-          "DATE_OF_TRANSACTION", Transaction::getDateOfTransaction, "TRANSACTION_TYPE_ID",
-          Transaction::getType);
+  private final List<ColumnDescriptor<Transaction, ?>> columnDescriptors = List.of(
+      new ColumnDescriptor<Transaction, String>("DESCRIPTION", Transaction::getDescription, true),
+      new ColumnDescriptor<Transaction, BigDecimal>("AMOUNT", Transaction::getAmount, true),
+      new ColumnDescriptor<Transaction, Date>("DATE_OF_TRANSACTION",
+          Transaction::getDateOfTransaction, true),
+      new ColumnDescriptor<Transaction, Integer>("TRANSACTION_TYPE_ID", Transaction::getType, false)
+  );
 
   @Override
   public String getTableName() {
@@ -28,18 +26,23 @@ public class TransactionTableDescriptor implements
   }
 
   @Override
-  public String getIdentifierColumnName() {
-    return "TRANSACTION_ID";
+  public List<String> getColumnNames() {
+    return columnDescriptors.stream().map(ColumnDescriptor::getName).collect(Collectors.toList());
   }
 
   @Override
-  public List<String> getColumnNames() {
-    return columnNames;
+  public List<String> getRequiredColumnNames() {
+    return columnDescriptors.stream().map(ColumnDescriptor::getName).collect(Collectors.toList());
   }
 
   @Override
   public List<Class<?>> getColumnTypes() {
-    return List.of(String.class, BigDecimal.class, Date.class, Integer.class);
+    return columnDescriptors.stream().map(ColumnDescriptor::getType).collect(Collectors.toList());
+  }
+
+  @Override
+  public String getIdentifierColumnName() {
+    return "TRANSACTION_ID";
   }
 
   @Override
@@ -52,13 +55,9 @@ public class TransactionTableDescriptor implements
     return (Long l, Transaction t) -> t.setIdentifier(l);
   }
 
-//  @Override
-//  public List<Function<Transaction, Object>> getValueExtractors() {
-//    return valueExtractors;
-//  }
-
   @Override
-  public Map<String, Function<Transaction, Object>> getColumnValueMappers() {
-    return columnValueMappers;
+  public Map<String, Function<Transaction, ?>> getColumnValueMappers() {
+    return columnDescriptors.stream()
+        .collect(Collectors.toMap(ColumnDescriptor::getName, ColumnDescriptor::getValueExtractor));
   }
 }
