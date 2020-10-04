@@ -92,10 +92,11 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public boolean isValid(T object) {
-    boolean validResult = true;
     for(String columnName: tableDescriptor.getRequiredColumnNames()) {
-      validResult = tableDescriptor.getColumnValueMappers().get(columnName).apply(object) != null;
+      if (tableDescriptor.getColumnValueMappers().get(columnName).apply(object) == null) {
+        return false;
+      }
     }
-    return validResult;
+    return true;
   }
 }
