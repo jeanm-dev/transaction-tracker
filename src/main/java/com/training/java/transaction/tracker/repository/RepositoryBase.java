@@ -16,6 +16,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING});";
   private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = {ID_VALUE};";
+  private static final String DELETE_STATEMENT = "DELETE FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
 
   public RepositoryBase(Database database, D tableDescriptor) {
     this.database = database;
@@ -41,6 +42,12 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
         .replace("{ALL_COLUMNS}", columnNames)
         .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName())
         .replace("{ID_VALUE}", "?");
+  }
+
+  private String getDeleteStatement() {
+    return DELETE_STATEMENT
+        .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName());
   }
 
   @Override
@@ -101,7 +108,19 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public boolean remove(long id) throws SQLException {
-    return false;
+    Connection connection = database.getConnection();
+
+    PreparedStatement preparedStatement = connection.prepareStatement(getDeleteStatement());
+    preparedStatement.setLong(1, id);
+
+    preparedStatement.execute();
+
+    // Determine if changes where applied
+    int updateCount = preparedStatement.getUpdateCount();
+
+    preparedStatement.close();
+
+    return updateCount > 0;
   }
 
   @Override
