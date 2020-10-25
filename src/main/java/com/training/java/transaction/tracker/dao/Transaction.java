@@ -1,10 +1,7 @@
 package com.training.java.transaction.tracker.dao;
 
-import com.training.java.transaction.tracker.repository.TableDescriptor;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-import java.util.function.Function;
 
 public class Transaction {
 
@@ -12,7 +9,7 @@ public class Transaction {
   private String description;
   private BigDecimal amount;
   private Date dateOfTransaction;
-  private Integer type; // Null? invalid value
+  private Integer type;
 
   public Transaction() {
   }

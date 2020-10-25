@@ -68,7 +68,6 @@ public class TransactionTableDescriptor implements
         .collect(Collectors.toMap(ColumnDescriptor::getName, ColumnDescriptor::getValueExtractor));
   }
 
-  //TODO: Throws here?
   @Override
   public Map<String, BiConsumer<Transaction, ?>> getColumnSetters() {
     return columnDescriptors.stream()
