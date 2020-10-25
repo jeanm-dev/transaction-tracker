@@ -27,6 +27,5 @@ public interface TableDescriptor<T> {
 
   T newObject();
 
-  public Map<String, BiConsumer<Transaction, ?>> getColumnSetters();
-//  Map<String, BiConsumer<T, Object>> getColumnSetters(); // TODO: Alternative - Maybe too generic?
+  Map<String, BiConsumer<T, Object>> getColumnSetters();
 }

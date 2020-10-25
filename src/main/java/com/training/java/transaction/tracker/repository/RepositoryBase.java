@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class RepositoryBase<T, D extends TableDescriptor<T>> implements Repository<T> {
@@ -35,7 +37,8 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   }
 
   private String getWhereClause() {
-    String columnNames = String.join(",", tableDescriptor.getColumnNames());
+    String columnNames = tableDescriptor.getIdentifierColumnName() + "," + String
+        .join(",", tableDescriptor.getColumnNames());
 
     return SELECT_WHERE_STATEMENT
         .replace("{TABLE_NAME}", tableDescriptor.getTableName())
@@ -116,25 +119,11 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
       long identifier = resultSet.getLong(1);
       tableDescriptor.getIdentifierSetter().accept(newObject, identifier);
 
-      //TODO: Fix this
-      // Setup other properties
-//      for (String columnName : tableDescriptor.getColumnNames()) {
-//        int columnIndex = resultSet.findColumn(columnName);
-//        tableDescriptor.getColumnSetters().get(columnName)
-//            .accept(newObject,
-//                resultSet.getObject(columnIndex, tableDescriptor.getColumnTypes().get(columnName)));
-//      }
-
-      //TODO: Ask about this casting here - Alternative
-//      // Setup other properties
-//      for(String columnName: tableDescriptor.getColumnNames()) {
-//        int columnIndex = resultSet.findColumn(columnName);
-//        Object columnValue = resultSet.getObject(columnIndex);
-//        if (columnValue != null) {
-//          Class<?> columnType = tableDescriptor.getColumnTypes().get(columnName);
-//          tableDescriptor.getColumnSetters().get(columnName).accept(newObject, columnType.cast(columnValue));
-//        }
-//      }
+      Map<String, BiConsumer<T, Object>> columnSetters = tableDescriptor.getColumnSetters();
+      for (String columnName : tableDescriptor.getColumnNames()) {
+        Object value = resultSet.getObject(columnName);
+        columnSetters.get(columnName).accept(newObject, value);
+      }
 
       return newObject;
     }

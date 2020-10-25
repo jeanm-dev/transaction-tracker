@@ -1,6 +1,8 @@
 package com.training.java.transaction.tracker.repository;
 
 import com.training.java.transaction.tracker.dao.Transaction;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -11,13 +13,10 @@ public class TransactionTableDescriptor implements
     TableDescriptor<Transaction> {
 
   private final List<ColumnDescriptor<Transaction, ?>> columnDescriptors = List.of(
-      new ColumnDescriptor<>("DESCRIPTION", Transaction::getDescription,
-          Transaction::setDescription, true),
-      new ColumnDescriptor<>("AMOUNT", Transaction::getAmount, Transaction::setAmount, true),
-      new ColumnDescriptor<>("DATE_OF_TRANSACTION", Transaction::getDateOfTransaction,
-          Transaction::setDateOfTransaction, true),
-      new ColumnDescriptor<>("TRANSACTION_TYPE_ID", Transaction::getType, Transaction::setType,
-          false)
+      new ColumnDescriptor<>("DESCRIPTION", Transaction::getDescription, true),
+      new ColumnDescriptor<>("AMOUNT", Transaction::getAmount, true),
+      new ColumnDescriptor<>("DATE_OF_TRANSACTION", Transaction::getDateOfTransaction, true),
+      new ColumnDescriptor<>("TRANSACTION_TYPE_ID", Transaction::getType, false)
   );
 
   @Override
@@ -69,14 +68,14 @@ public class TransactionTableDescriptor implements
   }
 
   @Override
-  public Map<String, BiConsumer<Transaction, ?>> getColumnSetters() {
-    return columnDescriptors.stream()
-        .collect(Collectors.toMap(ColumnDescriptor::getName, ColumnDescriptor::getValueSetter));
+  public Map<String, BiConsumer<Transaction, Object>> getColumnSetters() {
+    //TODO: See if this can be moved to the ColumnDescriptor class
+    return Map.of(
+        "DESCRIPTION", (transaction, object) -> transaction.setDescription((String) object),
+        "AMOUNT", (transaction, object) -> transaction.setAmount((BigDecimal) object),
+        "DATE_OF_TRANSACTION",
+        (transaction, object) -> transaction.setDateOfTransaction((Date) object),
+        "TRANSACTION_TYPE_ID", (transaction, object) -> transaction.setType((Integer) object)
+    );
   }
-
-//  @Override
-//  public Map<String, BiConsumer<Transaction, Object>> getColumnSetters() {
-//    return columnDescriptors.stream()
-//        .collect(Collectors.toMap(ColumnDescriptor::getName, ColumnDescriptor::getValueSetter));
-//  }
 }
