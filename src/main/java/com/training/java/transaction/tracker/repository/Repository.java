@@ -9,7 +9,7 @@ public interface Repository<T> {
 
   boolean remove(long id) throws SQLException;
 
-  void update(T object) throws SQLException;
+  void update(T object) throws Exception;
 
   List<T> fetchAll() throws SQLException;
 

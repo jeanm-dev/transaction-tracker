@@ -159,7 +159,10 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   }
 
   @Override
-  public void update(T object) throws SQLException {
+  public void update(T object) throws Exception {
+    if (tableDescriptor.getIdentifierExtractor().apply(object) == null) {
+      throw new MissingIdentifierValueException();
+    }
 
     Connection connection = database.getConnection();
 
