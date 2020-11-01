@@ -19,6 +19,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING});";
   private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
   private static final String DELETE_STATEMENT = "DELETE FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
+  private static final String UPDATE_STATEMENT = "UPDATE {TABLE_NAME} SET {COLUMNS_TO_UPDATE} WHERE {ID_COLUMN} = ?";
 
   public RepositoryBase(Database database, D tableDescriptor) {
     this.database = database;
@@ -49,6 +50,14 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   private String getDeleteStatement() {
     return DELETE_STATEMENT
         .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName());
+  }
+
+  private String getUpdateStatement() {
+    String columnsToUpdate = String.join(" = ?, ", tableDescriptor.getColumnNames()) + " = ? ";
+    return UPDATE_STATEMENT
+        .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{COLUMNS_TO_UPDATE}", columnsToUpdate)
         .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName());
   }
 
@@ -152,6 +161,26 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   @Override
   public void update(T object) throws SQLException {
 
+    Connection connection = database.getConnection();
+
+    PreparedStatement preparedStatement = connection.prepareStatement(getUpdateStatement());
+
+    System.out.println(getUpdateStatement());
+
+    int i;
+    for (i = 0; i < tableDescriptor.getColumnNames().size(); i++) {
+      String columnName = tableDescriptor.getColumnNames().get(i);
+      int columnIndex = i + 1;
+      preparedStatement
+          .setObject(columnIndex, tableDescriptor.getColumnValueMappers().get(columnName).apply(object));
+    }
+
+    int identifierIndex = i + 1;
+    preparedStatement.setLong(identifierIndex, tableDescriptor.getIdentifierExtractor().apply(object));
+
+    System.out.println(preparedStatement);
+    preparedStatement.execute();
+    preparedStatement.close();
   }
 
   @Override
