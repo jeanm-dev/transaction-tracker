@@ -185,11 +185,13 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
       String columnName = tableDescriptor.getColumnNames().get(i);
       int columnIndex = i + 1;
       preparedStatement
-          .setObject(columnIndex, tableDescriptor.getColumnValueMappers().get(columnName).apply(object));
+          .setObject(columnIndex,
+              tableDescriptor.getColumnValueMappers().get(columnName).apply(object));
     }
 
     int identifierIndex = i + 1;
-    preparedStatement.setLong(identifierIndex, tableDescriptor.getIdentifierExtractor().apply(object));
+    preparedStatement
+        .setLong(identifierIndex, tableDescriptor.getIdentifierExtractor().apply(object));
 
     System.out.println(preparedStatement);
     preparedStatement.execute();
@@ -223,7 +225,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
     }
 
     preparedStatement.close();
-    
+
     return objectList;
   }
 
