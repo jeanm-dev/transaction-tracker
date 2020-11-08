@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -19,7 +20,8 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
   private static final String ADD_STATEMENT = "INSERT INTO {TABLE_NAME} ({ALL_COLUMNS}) VALUES ({VALUES_STRING});";
   private static final String SELECT_WHERE_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
   private static final String DELETE_STATEMENT = "DELETE FROM {TABLE_NAME} WHERE {ID_COLUMN} = ?;";
-  private static final String UPDATE_STATEMENT = "UPDATE {TABLE_NAME} SET {COLUMNS_TO_UPDATE} WHERE {ID_COLUMN} = ?";
+  private static final String UPDATE_STATEMENT = "UPDATE {TABLE_NAME} SET {COLUMNS_TO_UPDATE} WHERE {ID_COLUMN} = ?;";
+  private static final String SELECT_ALL_STATEMENT = "SELECT {ALL_COLUMNS} FROM {TABLE_NAME};";
 
   public RepositoryBase(Database database, D tableDescriptor) {
     this.database = database;
@@ -59,6 +61,14 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
         .replace("{TABLE_NAME}", tableDescriptor.getTableName())
         .replace("{COLUMNS_TO_UPDATE}", columnsToUpdate)
         .replace("{ID_COLUMN}", tableDescriptor.getIdentifierColumnName());
+  }
+
+  private String getSelectAllStatement() {
+    String columnNames = tableDescriptor.getIdentifierColumnName() + "," + String
+        .join(",", tableDescriptor.getColumnNames());
+    return SELECT_ALL_STATEMENT
+        .replace("{TABLE_NAME}", tableDescriptor.getTableName())
+        .replace("{ALL_COLUMNS}", columnNames);
   }
 
   @Override
@@ -134,6 +144,7 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
         columnSetters.get(columnName).accept(newObject, value);
       }
 
+      preparedStatement.close();
       return newObject;
     }
 
@@ -165,7 +176,6 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
     }
 
     Connection connection = database.getConnection();
-
     PreparedStatement preparedStatement = connection.prepareStatement(getUpdateStatement());
 
     System.out.println(getUpdateStatement());
@@ -188,7 +198,33 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
   @Override
   public List<T> fetchAll() throws SQLException {
-    return null;
+    List<T> objectList = new ArrayList<>();
+
+    Connection connection = database.getConnection();
+    PreparedStatement preparedStatement = connection.prepareStatement(getSelectAllStatement());
+
+    System.out.println(getSelectAllStatement());
+
+    ResultSet resultSet = preparedStatement.executeQuery();
+
+    while (resultSet.next()) {
+      T newObject = tableDescriptor.newObject();
+      // Setup identifier
+      long identifier = resultSet.getLong(1);
+      tableDescriptor.getIdentifierSetter().accept(newObject, identifier);
+
+      Map<String, BiConsumer<T, Object>> columnSetters = tableDescriptor.getColumnSetters();
+      for (String columnName : tableDescriptor.getColumnNames()) {
+        Object value = resultSet.getObject(columnName);
+        columnSetters.get(columnName).accept(newObject, value);
+      }
+
+      objectList.add(newObject);
+    }
+
+    preparedStatement.close();
+    
+    return objectList;
   }
 
   @Override
