@@ -1,8 +1,9 @@
-package com.training.java.transaction.tracker.presentation.application;
+package com.training.java.transaction.tracker.presentation.application.test;
 
 import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.data.MySQLDatabase;
 import com.training.java.transaction.tracker.dao.TransactionType;
+import com.training.java.transaction.tracker.presentation.application.ConfigurationLoader;
 import com.training.java.transaction.tracker.repository.TransactionTypeRepository;
 import com.training.java.transaction.tracker.repository.TransactionTypeRepositoryImplementation;
 import java.sql.SQLException;
