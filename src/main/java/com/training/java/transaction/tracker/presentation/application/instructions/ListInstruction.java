@@ -69,9 +69,9 @@ public class ListInstruction implements Instruction {
 
         String formattedAmount = decimalFormat.format(transaction.getAmount());
         String formattedDate =  dateFormatter.format(transaction.getDateOfTransaction());
-        int type = transaction.getType();
+        Integer type = transaction.getType();
 
-        String transactionLine = String.format("%s \t %s \t %s \t %d", transaction.getDescription(), formattedAmount, formattedDate, type);
+        String transactionLine = String.format("%s \t %s \t %s \t %s", transaction.getDescription(), formattedAmount, formattedDate, type == null ? "Undefined" : type);
         commandLine.printWithNewLine(transactionLine);
     }
 
