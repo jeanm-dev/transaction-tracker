@@ -4,8 +4,8 @@ import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.data.MySQLDatabase;
 import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.presentation.application.ConfigurationLoader;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
-import com.training.java.transaction.tracker.repository.TransactionRepositoryImplementation;
+import com.training.java.transaction.tracker.repository.deprecated.TransactionRepository;
+import com.training.java.transaction.tracker.repository.deprecated.TransactionRepositoryImplementation;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package com.training.java.transaction.tracker.repository;
+package com.training.java.transaction.tracker.repository.deprecated;
 
 import com.training.java.transaction.tracker.dao.Transaction;
 

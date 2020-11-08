@@ -1,8 +1,9 @@
-package com.training.java.transaction.tracker.repository;
+package com.training.java.transaction.tracker.repository.deprecated;
 
 import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.dao.Transaction;
 
+import com.training.java.transaction.tracker.repository.deprecated.TransactionRepository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

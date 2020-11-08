@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.dao.TransactionType;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.deprecated.TransactionRepository;
 import com.training.java.transaction.tracker.repository.TransactionTypeRepository;
 import com.training.java.transaction.tracker.service.dto.TransactionDto;
 import com.training.java.transaction.tracker.service.request.CreateTransactionRequest;
