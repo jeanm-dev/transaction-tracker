@@ -5,7 +5,8 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.presentation.interaction.InvalidInputException;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -19,9 +20,9 @@ public class EditIntruction implements Instruction {
 
     private final CommandLine commandLine;
     private InstructionDescription instructionDescription;
-    private TransactionRepository transactionRepository;
+    private RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository;
 
-    public EditIntruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
+    public EditIntruction(String command, RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
         this.commandLine = commandLine;
 
@@ -100,7 +101,7 @@ public class EditIntruction implements Instruction {
     private void updateTransaction(Transaction transaction) {
         try {
             transactionRepository.update(transaction);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             commandLine.printWithNewLine("Unable to save updates!\nPlease try again later!");
 //            e.printStackTrace();
         }

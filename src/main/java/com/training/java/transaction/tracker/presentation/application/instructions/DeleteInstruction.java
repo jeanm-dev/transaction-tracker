@@ -4,7 +4,8 @@ import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.DeleteInstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -14,11 +15,11 @@ import java.util.List;
 
 public class DeleteInstruction implements Instruction {
 
-    private final TransactionRepository transactionRepository;
+    private final RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository;
     private final CommandLine commandLine;
     private InstructionDescription instructionDescription;
 
-    public DeleteInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
+    public DeleteInstruction(String command, RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
         this.commandLine = commandLine;
 

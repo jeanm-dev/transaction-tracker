@@ -1,12 +1,13 @@
 package com.training.java.transaction.tracker.presentation.application;
 
+import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.data.Database;
 import com.training.java.transaction.tracker.data.MySQLDatabase;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLineImplementation;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
-import com.training.java.transaction.tracker.repository.TransactionRepositoryImplementation;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
 
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 import java.util.Scanner;
 
 public class ConsoleApplication {
@@ -33,7 +34,7 @@ public class ConsoleApplication {
         System.out.println(string);
     }
 
-    private static TransactionRepository createTransactionRepository() {
+    private static RepositoryBase<Transaction, TransactionTableDescriptor> createTransactionRepository() {
         // Load Configuration for database from Properties
         ConfigurationLoader configurationLoader = ConfigurationLoader.getInstance();
 
@@ -42,7 +43,8 @@ public class ConsoleApplication {
         String password = configurationLoader.getPassword();
 
         Database database = new MySQLDatabase(connectionString, username, password);
-        TransactionRepository repository = new TransactionRepositoryImplementation(database);
+        TransactionTableDescriptor transactionTableDescriptor = new TransactionTableDescriptor();
+        RepositoryBase<Transaction, TransactionTableDescriptor> repository = new RepositoryBase<>(database, transactionTableDescriptor);
 
         return repository;
     }

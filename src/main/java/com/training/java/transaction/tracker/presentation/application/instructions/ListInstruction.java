@@ -4,7 +4,8 @@ import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.application.instructions.description.ListInstructionDescription;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -16,9 +17,9 @@ public class ListInstruction implements Instruction {
 
     private final CommandLine commandLine;
     private final InstructionDescription instructionDescription;
-    private final TransactionRepository transactionRepository;
+    private final RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository;
 
-    public ListInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
+    public ListInstruction(String command, RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
         this.commandLine = commandLine;
 

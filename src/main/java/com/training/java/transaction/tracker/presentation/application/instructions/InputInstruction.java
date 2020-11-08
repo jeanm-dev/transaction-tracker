@@ -5,8 +5,9 @@ import com.training.java.transaction.tracker.presentation.application.instructio
 import com.training.java.transaction.tracker.presentation.application.instructions.description.InstructionDescription;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
 import com.training.java.transaction.tracker.presentation.interaction.InvalidInputException;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
 
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -21,11 +22,11 @@ public class InputInstruction implements Instruction {
 
     private final CommandLine commandLine;
     private final InstructionDescription instructionDescription;
-    private final TransactionRepository transactionRepository;
+    private final RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository;
 
     private List<String> inputFields;
 
-    public InputInstruction(String command, TransactionRepository transactionRepository, CommandLine commandLine) {
+    public InputInstruction(String command, RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository, CommandLine commandLine) {
         this.transactionRepository = transactionRepository;
         this.commandLine = commandLine;
 
@@ -60,7 +61,7 @@ public class InputInstruction implements Instruction {
         try {
             Transaction transaction = new Transaction(description, amount, dateOfTransaction);
             transactionRepository.create(transaction);
-        } catch (SQLException exception) {
+        } catch (Exception exception) {
             commandLine.printWithNewLine("Unable to store transaction!");
             commandLine.printWithNewLine("Please try again!");
         }

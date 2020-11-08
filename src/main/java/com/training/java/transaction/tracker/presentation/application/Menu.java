@@ -1,8 +1,10 @@
 package com.training.java.transaction.tracker.presentation.application;
 
+import com.training.java.transaction.tracker.dao.Transaction;
 import com.training.java.transaction.tracker.presentation.application.instructions.*;
 import com.training.java.transaction.tracker.presentation.interaction.CommandLine;
-import com.training.java.transaction.tracker.repository.TransactionRepository;
+import com.training.java.transaction.tracker.repository.RepositoryBase;
+import com.training.java.transaction.tracker.repository.TransactionTableDescriptor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,12 +12,12 @@ import java.util.Map;
 public class Menu {
 
     private final CommandLine commandLine;
-    private TransactionRepository transactionRepository;
+    private RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository;
     private Map<String, Instruction> instructions;
 
     private static final String NEW_LINE = "\n";
 
-    public Menu(TransactionRepository transactionRepository, CommandLine commandLine) {
+    public Menu(RepositoryBase<Transaction, TransactionTableDescriptor> transactionRepository, CommandLine commandLine) {
         this.commandLine = commandLine;
         this.transactionRepository = transactionRepository;
 
