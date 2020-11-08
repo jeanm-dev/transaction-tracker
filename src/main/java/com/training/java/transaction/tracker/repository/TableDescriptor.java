@@ -1,6 +1,5 @@
 package com.training.java.transaction.tracker.repository;
 
-import com.training.java.transaction.tracker.dao.Transaction;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
