@@ -2,13 +2,13 @@ package com.training.java.transaction.tracker.service.request;
 
 public class FetchTransactionRequest {
 
-  private final int transactionId;
+  private final Long transactionId;
 
-  public FetchTransactionRequest(int transactionId) {
+  public FetchTransactionRequest(Long transactionId) {
     this.transactionId = transactionId;
   }
 
-  public int getTransactionId() {
+  public Long getTransactionId() {
     return transactionId;
   }
 }

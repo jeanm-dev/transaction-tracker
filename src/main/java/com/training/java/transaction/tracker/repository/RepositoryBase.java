@@ -217,8 +217,16 @@ public class RepositoryBase<T, D extends TableDescriptor<T>> implements Reposito
 
       Map<String, BiConsumer<T, Object>> columnSetters = tableDescriptor.getColumnSetters();
       for (String columnName : tableDescriptor.getColumnNames()) {
-        Object value = resultSet.getObject(columnName);
-        columnSetters.get(columnName).accept(newObject, value);
+        Class<?> type = tableDescriptor.getColumnTypes().get(columnName);
+
+        if (type.equals(Long.class)) {
+          Long value = resultSet.getLong(columnName);
+          columnSetters.get(columnName).accept(newObject, value);
+        } else {
+          Object value = resultSet.getObject(columnName);
+          columnSetters.get(columnName).accept(newObject, value);
+        }
+
       }
 
       objectList.add(newObject);

@@ -42,7 +42,7 @@ public class TransactionDtoFactoryTest {
   @Test
   void testGivenFactoryWithTypesAndMakeInvokedWithTransactionThatHasNoTypeThenReturnTransactionDtoWithUnspecifiedType() {
     // Given
-    List<TransactionType> transactionTypes = List.of(new TransactionType(1, "First Type"));
+    List<TransactionType> transactionTypes = List.of(new TransactionType(1L, "First Type"));
     Transaction transaction = newTransaction();
     String expectedType = TransactionDto.UNDEFINED;
 
@@ -56,7 +56,7 @@ public class TransactionDtoFactoryTest {
   @Test
   void testGivenFactoryWithTypesAndMakeInvokedWithTransactionThatHasMatchingTypeThenReturnTransactionDto() {
     // Given
-    int matchingTypeId = 1;
+    Long matchingTypeId = 1L;
     String expectedType = "Matching Type";
     TransactionType matchingType = new TransactionType(matchingTypeId, expectedType);
 
@@ -74,9 +74,9 @@ public class TransactionDtoFactoryTest {
   @Test
   void testGivenFactoryWithTypesAndMakeInvokedWithTransactionThatDoesNotMatchTypesThenReturnTransactionDtoWithUnspecifiedType() {
     // Given
-    int nonMatchingTypeId = 2;
+    Long nonMatchingTypeId = 2L;
     String expectedType = TransactionDto.UNDEFINED;
-    TransactionType notMatchingType = new TransactionType(1, "Type");
+    TransactionType notMatchingType = new TransactionType(1L, "Type");
 
     List<TransactionType> transactionTypes = List.of(notMatchingType);
     Transaction transaction = newTransaction();

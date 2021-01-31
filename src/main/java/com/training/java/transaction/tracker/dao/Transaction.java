@@ -9,7 +9,7 @@ public class Transaction {
   private String description;
   private BigDecimal amount;
   private Date dateOfTransaction;
-  private Integer type;
+  private Long type;
 
   public Transaction() {
   }
@@ -53,11 +53,11 @@ public class Transaction {
     this.dateOfTransaction = dateOfTransaction;
   }
 
-  public Integer getType() {
+  public Long getType() {
     return type;
   }
 
-  public void setType(Integer type) {
+  public void setType(Long type) {
     this.type = type;
   }
 

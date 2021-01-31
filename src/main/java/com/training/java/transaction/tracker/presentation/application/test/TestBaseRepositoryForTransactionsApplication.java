@@ -126,7 +126,7 @@ public class TestBaseRepositoryForTransactionsApplication {
       RepositoryBase<Transaction, TransactionTableDescriptor> repositoryBase) {
 
     Transaction insertTransaction = makeInsertTransaction();
-    insertTransaction.setType(Integer.MAX_VALUE);
+    insertTransaction.setType(Long.MAX_VALUE);
     System.out.println("Is valid transaction: " + repositoryBase.isValid(insertTransaction));
     try {
       Transaction result = repositoryBase.create(insertTransaction);

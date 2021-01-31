@@ -13,10 +13,10 @@ public class TransactionTableDescriptor implements
     TableDescriptor<Transaction> {
 
   private final List<ColumnDescriptor<Transaction, ?>> columnDescriptors = List.of(
-      new ColumnDescriptor<>("DESCRIPTION", Transaction::getDescription, true),
-      new ColumnDescriptor<>("AMOUNT", Transaction::getAmount, true),
-      new ColumnDescriptor<>("DATE_OF_TRANSACTION", Transaction::getDateOfTransaction, true),
-      new ColumnDescriptor<>("TRANSACTION_TYPE_ID", Transaction::getType, false)
+      new ColumnDescriptor<>("DESCRIPTION", Transaction::getDescription, true, String.class),
+      new ColumnDescriptor<>("AMOUNT", Transaction::getAmount, true, BigDecimal.class),
+      new ColumnDescriptor<>("DATE_OF_TRANSACTION", Transaction::getDateOfTransaction, true, Date.class),
+      new ColumnDescriptor<>("TRANSACTION_TYPE_ID", Transaction::getType, false, Long.class)
   );
 
   @Override
@@ -75,7 +75,7 @@ public class TransactionTableDescriptor implements
         "AMOUNT", (transaction, object) -> transaction.setAmount((BigDecimal) object),
         "DATE_OF_TRANSACTION",
         (transaction, object) -> transaction.setDateOfTransaction((Date) object),
-        "TRANSACTION_TYPE_ID", (transaction, object) -> transaction.setType((Integer) object)
+        "TRANSACTION_TYPE_ID", (transaction, object) -> transaction.setType((Long)object)
     );
   }
 }

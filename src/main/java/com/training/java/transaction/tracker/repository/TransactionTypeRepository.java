@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TransactionTypeRepository {
 
-  int create(String transactionType) throws SQLException;
+  Long create(String transactionType) throws SQLException;
 
   boolean remove(String income) throws SQLException;
 

@@ -23,7 +23,7 @@ public class TestTransactionTypeRepositoryApplication {
     TransactionTypeRepository transactionTypeRepository = new TransactionTypeRepositoryImplementation(
         database);
 
-    int identifier = testCreateTransactionType(transactionTypeRepository);
+    Long identifier = testCreateTransactionType(transactionTypeRepository);
 
     testUpdateTransactionType(identifier, transactionTypeRepository);
 
@@ -35,7 +35,7 @@ public class TestTransactionTypeRepositoryApplication {
   }
 
   private static void testUpdateTransactionType(
-      int identifier,
+      Long identifier,
       TransactionTypeRepository transactionTypeRepository) {
     try {
       TransactionType transactionType = new TransactionType(identifier, "DESCRIPTION");
@@ -56,14 +56,14 @@ public class TestTransactionTypeRepositoryApplication {
     }
   }
 
-  private static int testCreateTransactionType(
+  private static Long testCreateTransactionType(
       TransactionTypeRepository transactionTypeRepository) {
     try {
       return transactionTypeRepository.create("INCOME");
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return 0;
+    return 0L;
   }
 
   private static void testRemoveTransactionType(

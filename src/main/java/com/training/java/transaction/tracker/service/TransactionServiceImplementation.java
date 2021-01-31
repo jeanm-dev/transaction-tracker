@@ -52,7 +52,7 @@ public class TransactionServiceImplementation implements TransactionService {
   @Override
   public FetchTransactionResponse fetchTransaction(
       FetchTransactionRequest fetchTransactionRequest) {
-    int transactionId = fetchTransactionRequest.getTransactionId();
+    Long transactionId = fetchTransactionRequest.getTransactionId();
 
     try {
       Transaction transaction = transactionRepository.fetchById(transactionId);
@@ -96,7 +96,7 @@ public class TransactionServiceImplementation implements TransactionService {
   public DeleteTransactionResponse deleteTransaction(
       DeleteTransactionRequest deleteTransactionRequest) {
     // Check and return false if not present
-    int transactionToDeleteId = deleteTransactionRequest.getTransactionId();
+    Long transactionToDeleteId = deleteTransactionRequest.getTransactionId();
 
     try {
       // Check if the transaction exists

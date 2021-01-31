@@ -93,29 +93,29 @@ class TransactionServiceImplementationTest {
   void fetchTransactionFailedWithExceptionThenReturnFailedResponse() throws SQLException {
     // Given
     SQLException sqlException = new SQLException("Unable to find id");
-    when(mockRepository.fetchById(anyInt())).thenThrow(sqlException);
+    when(mockRepository.fetchById(anyLong())).thenThrow(sqlException);
 
     // When
     FetchTransactionResponse response = serviceUnderTest
-        .fetchTransaction(aFetchTransactionRequest(100));
+        .fetchTransaction(aFetchTransactionRequest(100L));
 
     // Then
     assertEquals(false, response.wasSuccessful());
     assertNotNull(response.getDescription());
   }
 
-  private FetchTransactionRequest aFetchTransactionRequest(int searchId) {
+  private FetchTransactionRequest aFetchTransactionRequest(Long searchId) {
     return new FetchTransactionRequest(searchId);
   }
 
   @Test
   void fetchTransactionIsInvokedWithUnknownIdThenReturnFailedResponse() throws SQLException {
     // Given
-    when(mockRepository.fetchById(anyInt())).thenReturn(null);
+    when(mockRepository.fetchById(anyLong())).thenReturn(null);
 
     // When
     FetchTransactionResponse response = serviceUnderTest
-        .fetchTransaction(aFetchTransactionRequest(200));
+        .fetchTransaction(aFetchTransactionRequest(200L));
 
     // Then
     assertEquals(false, response.wasSuccessful());
@@ -127,8 +127,8 @@ class TransactionServiceImplementationTest {
   void fetchTransactionSuccessfulWithMatchingTypeThenReturnTransactionWithExpectedTypeInSuccessfulResponse()
       throws SQLException {
     // Given
-    int expectedTransactionId = 100;
-    int expectedTransactionType = 22;
+    Long expectedTransactionId = 100L;
+    Long expectedTransactionType = 22L;
     String expectedType = "Matching Type";
 
     Transaction stubbedTransaction = newTransaction();
@@ -137,7 +137,7 @@ class TransactionServiceImplementationTest {
 
     TransactionType transactionType = new TransactionType(expectedTransactionType, expectedType);
 
-    when(mockRepository.fetchById(anyInt())).thenReturn(stubbedTransaction);
+    when(mockRepository.fetchById(anyLong())).thenReturn(stubbedTransaction);
     when(mockTypeRepository.fetchAll()).thenReturn(List.of(transactionType));
 
     // When
@@ -164,13 +164,13 @@ class TransactionServiceImplementationTest {
   void fetchTransactionSuccessfulUnmatchedTypeThenReturnTransactionWithUndefinedTypeInSuccessfulResponse()
       throws SQLException {
     // Given
-    int expectedTransactionId = 100;
+    Long expectedTransactionId = 100L;
     String expectedType = TransactionDto.UNDEFINED;
 
     Transaction stubbedTransaction = newTransaction();
     stubbedTransaction.setIdentifier(expectedTransactionId);
 
-    when(mockRepository.fetchById(anyInt())).thenReturn(stubbedTransaction);
+    when(mockRepository.fetchById(anyLong())).thenReturn(stubbedTransaction);
     when(mockTypeRepository.fetchAll()).thenReturn(null);
 
     // When
@@ -234,9 +234,9 @@ class TransactionServiceImplementationTest {
   @Test
   void deleteTransactionFailedWithExceptionThenReturnFailedDeleteResponse() throws SQLException {
     // Given
-    int transactionIdToDelete = 99;
+    Long transactionIdToDelete = 99L;
 
-    when(mockRepository.doesIdExist(anyInt())).thenReturn(true);
+    when(mockRepository.doesIdExist(anyLong())).thenReturn(true);
     doThrow(new SQLException("Unable to connect to database!")).when(mockRepository)
         .remove(anyLong());
 
@@ -249,15 +249,15 @@ class TransactionServiceImplementationTest {
     assertNotNull(response.getDescription());
   }
 
-  private DeleteTransactionRequest aDeleteTransactionRequest(int transactionIdToDelete) {
+  private DeleteTransactionRequest aDeleteTransactionRequest(Long transactionIdToDelete) {
     return new DeleteTransactionRequest(transactionIdToDelete);
   }
 
   @Test
   void deleteTransactionNonExistingTransactionThenReturnFailedResponse() throws SQLException {
-    int transactionIdToDelete = 33;
+    Long transactionIdToDelete = 33L;
 
-    when(mockRepository.doesIdExist(anyInt())).thenReturn(false);
+    when(mockRepository.doesIdExist(anyLong())).thenReturn(false);
 
     // When
     DeleteTransactionResponse response = serviceUnderTest
@@ -271,10 +271,10 @@ class TransactionServiceImplementationTest {
   @Test
   void deleteTransactionSuccessfulThenReturnSuccessfulResponse() throws SQLException {
     // Given
-    int transactionIdToDelete = 33;
+    Long transactionIdToDelete = 33L;
 
-    when(mockRepository.doesIdExist(anyInt())).thenReturn(true);
-    when(mockRepository.remove(anyInt())).thenReturn(true);
+    when(mockRepository.doesIdExist(anyLong())).thenReturn(true);
+    when(mockRepository.remove(anyLong())).thenReturn(true);
 
     // When
     DeleteTransactionResponse response = serviceUnderTest

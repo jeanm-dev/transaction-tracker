@@ -37,8 +37,8 @@ public class TransactionTypeRepositoryImplementation implements TransactionTypeR
   }
 
   @Override
-  public int create(String transactionType) throws SQLException {
-    int transactionTypeId = -1; // Default values?
+  public Long create(String transactionType) throws SQLException {
+    Long transactionTypeId = -1L; // Default values?
     Connection connection = database.getConnection();
 
     PreparedStatement preparedStatement = connection
@@ -50,7 +50,7 @@ public class TransactionTypeRepositoryImplementation implements TransactionTypeR
     ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
 
     if (generatedKeys.next()) {
-      transactionTypeId = generatedKeys.getInt(1);
+      transactionTypeId = generatedKeys.getLong(1);
     }
 
     preparedStatement.close();
@@ -123,7 +123,7 @@ public class TransactionTypeRepositoryImplementation implements TransactionTypeR
 
     PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STATEMENT);
     preparedStatement.setString(1, transactionType.getDescription());
-    preparedStatement.setInt(2, transactionType.getIdentifier());
+    preparedStatement.setLong(2, transactionType.getIdentifier());
 
     preparedStatement.execute();
 
@@ -132,10 +132,10 @@ public class TransactionTypeRepositoryImplementation implements TransactionTypeR
 
   private TransactionType mapToTransactionType(ResultSet resultSet) throws SQLException {
     if (!resultSet.isClosed()) {
-      int typeId;
+      Long typeId;
       String description;
 
-      typeId = resultSet.getInt(TYPE_ID_COLUMN);
+      typeId = resultSet.getLong(TYPE_ID_COLUMN);
       description = resultSet.getString(DESCRIPTION_COLUMN);
 
       return new TransactionType(typeId, description);

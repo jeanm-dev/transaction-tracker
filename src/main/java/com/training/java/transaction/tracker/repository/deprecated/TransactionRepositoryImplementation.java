@@ -116,12 +116,12 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public boolean doesIdExist(int transactionId) throws SQLException {
+    public boolean doesIdExist(Long transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(
             SELECT_TRANSACTION_WITH_ID_EXISTS_STATEMENT);
-        preparedStatement.setInt(1, transactionId);
+        preparedStatement.setLong(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -135,11 +135,11 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
     }
 
     @Override
-    public Transaction fetchById(int transactionId) throws SQLException {
+    public Transaction fetchById(Long transactionId) throws SQLException {
         Connection connection = database.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TRANSACTION_BY_ID_STATEMENT);
-        preparedStatement.setInt(1, transactionId);
+        preparedStatement.setLong(1, transactionId);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -188,7 +188,7 @@ public class TransactionRepositoryImplementation implements TransactionRepositor
             transaction.setDescription(resultSet.getString(DESCRIPTION_COLUMN));
             transaction.setDateOfTransaction(resultSet.getDate(DATE_OF_TRANSACTION_COLUMN));
             transaction.setIdentifier(resultSet.getInt(TRANSACTION_ID_COLUMN));
-            transaction.setType(resultSet.getInt(TRANSACTION_TYPE_COLUMN)); // Returns 0 if null
+            transaction.setType(resultSet.getLong(TRANSACTION_TYPE_COLUMN)); // Returns 0 if null
 
             return transaction;
         }

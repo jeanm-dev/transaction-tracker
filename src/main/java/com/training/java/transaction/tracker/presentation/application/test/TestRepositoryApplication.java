@@ -134,14 +134,14 @@ public class TestRepositoryApplication {
     private static void testTransactionExists(TransactionRepository transactionRepository) {
         ;
         try {
-            boolean b = transactionRepository.doesIdExist(100);
+            boolean b = transactionRepository.doesIdExist(100L);
             System.out.println("Transaction 100 exists? " + b);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         try {
-            boolean b = transactionRepository.doesIdExist(1);
+            boolean b = transactionRepository.doesIdExist(1L);
             System.out.println("Transaction 1 exists? " + b);
         } catch (SQLException e) {
             e.printStackTrace();

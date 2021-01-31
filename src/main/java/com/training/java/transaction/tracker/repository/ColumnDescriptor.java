@@ -9,10 +9,11 @@ public class ColumnDescriptor<T, S> {
   private final Boolean isRequired;
   private S type;
 
-  public ColumnDescriptor(String name, Function<T, S> valueExtractor, Boolean isRequired) {
+  public ColumnDescriptor(String name, Function<T, S> valueExtractor, Boolean isRequired, S type) {
     this.name = name;
     this.valueExtractor = valueExtractor;
     this.isRequired = isRequired;
+    this.type = type;
   }
 
   public String getName() {
